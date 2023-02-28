@@ -1,0 +1,103 @@
+{
+    "cloud": {
+        "id": "c77115ce-e143-4a10-a03d-44d5478b0017",
+        "secret": "y06xcq3jb6666sdhf8wludw8jcj3j7cyz2szrrm4h3p9fpon",
+        "location_secret": "7v4haojq74jxqcmpowqhb1i81spnp9elyczuds8voundl9xm",
+        "location_secrets": [
+            {
+                "ID": "5b6b20e1-86fa-4462-afc3-9390656bed4a",
+                "Secret": "7v4haojq74jxqcmpowqhb1i81spnp9elyczuds8voundl9xm"
+            }
+        ],
+        "managed_by": "viam.cloud",
+        "fqdn": "envirobot-2023-main.nlqffjmg8d.viam.cloud",
+        "local_fqdn": "envirobot-2023-main.nlqffjmg8d.local.viam.cloud",
+        "signaling_address": "app.viam.com:443",
+        "path": "",
+        "log_path": "",
+        "app_address": "",
+        "tls_certificate": "",
+        "tls_private_key": ""
+    },
+    "components": [
+        {
+            "name": "IMU",
+            "namespace": "rdk",
+            "type": "movement_sensor",
+            "model": {
+                "namespace": "rdk",
+                "model_family": "builtin",
+                "name": "gyro-mpu6050"
+            },
+            "depends_on": [
+                "pi"
+            ],
+            "service_config": [
+                {
+                    "type": "data_manager",
+                    "attributes": {
+                        "capture_methods": []
+                    }
+                }
+            ],
+            "attributes": {
+                "board": "pi",
+                "i2c_bus": "IMU"
+            }
+        },
+        {
+            "name": "pi",
+            "namespace": "rdk",
+            "type": "board",
+            "model": {
+                "namespace": "rdk",
+                "model_family": "builtin",
+                "name": "pi"
+            },
+            "depends_on": [],
+            "service_config": null,
+            "attributes": {
+                "i2cs": [
+                    {
+                        "bus": "1",
+                        "name": "IMU"
+                    }
+                ]
+            }
+        }
+    ],
+    "network": {
+        "fqdn": "",
+        "bind_address": "",
+        "tls_cert_file": "",
+        "tls_key_file": "",
+        "sessions": {}
+    },
+    "auth": {
+        "handlers": [
+            {
+                "type": "oauth-web-auth",
+                "config": {},
+                "web_oauth_config": {
+                    "allowed_audiences": [
+                        "nlqffjmg8d.viam.cloud",
+                        "envirobot-2023-main.nlqffjmg8d.viam.cloud"
+                    ],
+                    "jwks": {
+                        "keys": [
+                            {
+                                "alg": "RS256",
+                                "e": "AQAB",
+                                "kid": "DNN_oQHF8tywEifoxN4Bh22DdtY",
+                                "kty": "RSA",
+                                "n": "07iNH_5NO-mfo5dWKgtffulTGOo-SgGHO-PhlgXmmv0PerzksrbwbkUCVhtHntG-qSVB7qkSrWvLwlnFPPGdPqY_m-AqqHiBnbafwRA9WQfZ5mQ-vzg9qgRz8eVyCMgT-Dn7MIym7_yxcOLlCBG1HhxugKhW5Tr25pm7XkuBVKUouQzoc639QT2OqBj_XUqDkIOKAnAfvrASMZK6cReWTP8wG4WBlaGOCEAcrGpQm_NoAv1TGSvCKh2nE3nvwIp67w8wQ5bYQ4aX80dzEOUFrfbDBF9fBsNziu6orm7GpD27FAG04USERuDA6Wc0BpF8y7d7BDP8MSBtSJ4QOfmmM2774CQY4NTHTzPflMHN43-yl3Qebl_1dciirgwWE6XwjaWTumVhrWXqU1zew4V3-bJYUEe_Hu8_dD_ham9TL6tIMrMYGq2zjJ2zwIXso8sVx5bWWUGDi0D81be6QnnKxHJ7Y77QtTrd9snYS8mCNNbsRP7O8SyoqErNmgpEB9nO-xk5FjhaeSR-T1DUBUxHX93auCS2AUz1Xyp_MtEhuWYBDKvfGjp7oAJaKLcB-vHXmYk44ps0Fbuk0K0MLPnxFNWp1n5Q-ytohnAJFARaxln7044bIfDnCpiIpKMrYE86oKqOG2RHf4Bb3FzgIZiAs9pwfTjnobdcbcjlPxIl3d0"
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "tls_auth_entities": null
+    },
+    "disable_partial_start": false
+}

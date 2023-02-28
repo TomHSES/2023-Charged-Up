@@ -1,0 +1,59 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.RevConstants.ModuleConstants;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
+
+public class SwerveTestSystem extends SubsystemBase 
+{
+    public SwerveModuleSystem TestModule;
+
+    public SwerveModuleSystem TestModule2;
+
+    public SwerveTestSystem(int testCanID, int test2CanID)
+    {
+        TestModule = new SwerveModuleSystem(testCanID, testCanID - 1, 0);
+        TestModule2 = null;//new SwerveModuleSystem(test2CanID, test2CanID - 1, 0);
+    }
+
+    public CommandBase TestDrive(CommandJoystick joystick) 
+    {
+        return run(() -> {
+            double rawThrottle = joystick.getThrottle();
+            double throttle = Math.abs((rawThrottle - 1) / 2);
+            double accel = joystick.getRawAxis(1) * throttle;
+            SmartDashboard.putNumber("Swerve Accel", accel);
+            double rotate = Math.toRadians(joystick.getRawAxis(2) * throttle);
+            SmartDashboard.putNumber("Swerve Rotate", rotate);
+            TestModule.setDesiredState(new SwerveModuleState(accel, new Rotation2d(0)));
+            //if (TestModule2 != null)
+            //TestModule2.setDesiredState(new SwerveModuleState(accel, new Rotation2d(rotate)));
+        });
+    }
+
+    public CommandBase TestStop() 
+    {
+        return run(() -> {
+            TestModule.setDesiredState(new SwerveModuleState(0, new Rotation2d(0)));
+            if (TestModule2 != null)
+            TestModule2.setDesiredState(new SwerveModuleState(0, new Rotation2d(0)));
+        });
+    }
+}

@@ -1,0 +1,60 @@
+{
+    "auth": {
+        "handlers":[{"type": "api-key", "config": { "keys":["hello"]}}]
+    },
+    "components": [
+        {
+            "name": "IMU",
+            "namespace": "rdk",
+            "type": "movement_sensor",
+            "model": {
+                "namespace": "rdk",
+                "model_family": "builtin",
+                "name": "gyro-mpu6050"
+            },
+            "depends_on": [
+                "pi"
+            ],
+            "service_config": [
+                {
+                    "type": "data_manager",
+                    "attributes": {
+                        "capture_methods": []
+                    }
+                }
+            ],
+            "attributes": {
+                "board": "pi",
+                "i2c_bus": "IMU"
+            }
+        },
+        {
+            "name": "pi",
+            "namespace": "rdk",
+            "type": "board",
+            "model": {
+                "namespace": "rdk",
+                "model_family": "builtin",
+                "name": "pi"
+            },
+            "depends_on": [],
+            "service_config": null,
+            "attributes": {
+                "i2cs": [
+                    {
+                        "bus": "1",
+                        "name": "IMU"
+                    }
+                ]
+            }
+        }
+    ],
+    "network": {
+        "fqdn": "",
+        "bind_address": "",
+        "tls_cert_file": "",
+        "tls_key_file": "",
+        "sessions": {}
+    },
+    "disable_partial_start": false
+}
