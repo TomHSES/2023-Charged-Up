@@ -5,12 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.FalconSystemRev;
 import frc.robot.commands.RotateFalconToPosition;
 import frc.robot.commands.Test_AutoTurn;
 import frc.robot.commands.Test_DescendIntake;
 import frc.robot.subsystems.TankDriveSystem;
+import frc.robot.subsystems.TestSparkMaxSystem;
 import frc.robot.subsystems.FalconSystem;
 import frc.robot.subsystems.DoubleSolenoidSystem;
 import frc.robot.subsystems.GyroscopeSystem;
@@ -19,6 +19,8 @@ import frc.robot.subsystems.VelocityFalconSystem;
 import frc.robot.subsystems.MPUSystem;
 
 import java.lang.ModuleLayer.Controller;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -51,6 +53,10 @@ public class RobotContainer {
 
   public LimelightSystem LimelightSystem;
 
+  public TestSparkMaxSystem TSMS;
+
+  public FalconSystem TestFalcon;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   /*private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);*/
@@ -71,7 +77,9 @@ public class RobotContainer {
     MPUSystem = new MPUSystem();
     LimelightSystem = new LimelightSystem();
     //Test_SwerveSystem = new SwerveTestSystem(21, 23);
+    //TSMS = new TestSparkMaxSystem(21);
     Joystick = new CommandJoystick(0);
+   // TestFalcon = new FalconSystem(62);
   }
 
   /**
@@ -91,14 +99,21 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     /*m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());*/
-   Joystick.button(5).onTrue(Test_FalconSystem.ZeroEncoder(50));
-    Joystick.button(6).whileTrue(new RotateFalconToPosition(Test_FalconSystem, 45000, 100, 1));//.whileFalse(new RotateFalconToPosition(Test_FalconSystem, 3000, 5000, 5));
-    Joystick.button(4).onTrue(MPUSystem.Recalibrate());
+    Joystick.button(5).onTrue(Test_FalconSystem.ZeroEncoder(50));
+   // Joystick.button(6).whileTrue(new RotateFalconToPosition(Test_FalconSystem, 45000, 100, 1));//.whileFalse(new RotateFalconToPosition(Test_FalconSystem, 3000, 5000, 5));
+  //  Joystick.button(6).onTrue(MPUSystem.Recalibrate());
+    //Joystick.button(6).whileTrue(TSMS.Test(-0.33)).whileFalse(TSMS.Test(0d));
+    //Joystick.button(6).whileTrue(TestFalcon.SetSpeed(0.33)).whileFalse(TestFalcon.SetSpeed(0.0));
     Joystick.button(7).onTrue(DoubleSolenoidSystem.SolenoidOff());
     Joystick.button(8).onTrue(DoubleSolenoidSystem.SolenoidForward());
     Joystick.button(9).onTrue(DoubleSolenoidSystem.SolenoidReverse());
     Joystick.button(10).onTrue(GyroscopeSystem.CalibrateGyroscope(DriveSystem));
-    Joystick.button(11).onTrue(new Test_AutoTurn(DriveSystem, GyroscopeSystem));
+    Joystick.button(11).onTrue(LimelightSystem.RotateToTarget(DriveSystem, false, 0.66));
+    Joystick.button(3).onTrue(LimelightSystem.ToggleLED());
+    Joystick.button(4).onTrue(LimelightSystem.TogglePipeline());
+
+
+
     //Joystick.button(3).whileTrue(Test_SwerveSystem.TestDrive(Joystick)).whileFalse(Test_SwerveSystem.TestStop());
   }
 

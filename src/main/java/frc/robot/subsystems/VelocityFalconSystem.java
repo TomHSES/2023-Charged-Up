@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
@@ -26,11 +27,13 @@ public class VelocityFalconSystem extends SubsystemBase {
         double p = .25;
         double i = .001;
         double d = 20;
-        FalconMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, loopIDX, timeOutMs);
+        FalconMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, loopIDX, timeOutMs);
         FalconMotor.configNominalOutputForward(0, timeOutMs);
         FalconMotor.configNominalOutputReverse(0, timeOutMs);
-        FalconMotor.configPeakOutputForward(1, timeOutMs);
-        FalconMotor.configPeakOutputReverse(-1, timeOutMs);
+        FalconMotor.configPeakOutputForward(0, timeOutMs);
+        FalconMotor.configPeakOutputReverse(-0, timeOutMs);
+        FalconMotor.configMotionAcceleration(i);
+        FalconMotor.configMotionCruiseVelocity(i);
         FalconMotor.setInverted(false);
         FalconMotor.setSensorPhase(false);
         FalconMotor.config_kF(loopIDX, f, timeOutMs);

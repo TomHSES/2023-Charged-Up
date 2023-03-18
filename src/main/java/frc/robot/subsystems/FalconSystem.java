@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,6 +36,14 @@ public class FalconSystem extends SubsystemBase {
     {
         CurrentSpeed += increment;
         CurrentSpeed = MathUtils.Clamp(CurrentSpeed, -1d, 1d);
+    }
+
+    public CommandBase SetSpeed(Double speed)
+    {
+        return run(() ->
+        {
+            FalconMotor.set(ControlMode.PercentOutput, speed);
+        });
     }
 
     public CommandBase ZeroEncoder(int timeoutMs)

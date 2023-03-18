@@ -71,7 +71,7 @@ public class RotateFalconToPosition extends CommandBase
         }
 
         SmartDashboard.putNumber("SVelocity", CurrentVelocity);
-        FalconSystem.FalconMotor.set(TalonFXControlMode.Velocity, 10);
+        FalconSystem.FalconMotor.set(TalonFXControlMode.Position, 1000);
         double sensorPosition = FalconSystem.FalconMotor.getSensorCollection().getIntegratedSensorPosition();
         SmartDashboard.putNumber("SPos", sensorPosition);
         SmartDashboard.putNumber("IPos", IntendedPosition);
