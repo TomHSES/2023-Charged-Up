@@ -7,14 +7,15 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
 /*
 Handles all things related to drive trains
 */
-public class TankDriveSystem extends SubsystemBase {
-
+public class TankDriveSystem extends SubsystemBase 
+{
     public final WPI_VictorSPX LeftFront_Motor;
     public final WPI_VictorSPX LeftBack_Motor;
     public final WPI_VictorSPX RightFront_Motor;
@@ -45,20 +46,20 @@ public class TankDriveSystem extends SubsystemBase {
     }
 
     /**
-     * @return a simple driving mechanism utilizing the Logitech Joystick's 
+     * @return A simple driving mechanism utilizing the Logitech Joystick's 
      * ability to move in a circular manner, as well as it's ability to 'twist' 
      */
     public CommandBase TwistDrive(CommandJoystick joystick) 
     {
-        return run(
-                () -> {
-                    double rawThrottle = joystick.getThrottle();
-                    double throttle = Math.abs((rawThrottle - 1) / 2);
-                    ArcadeDrive(joystick.getRawAxis(2) * throttle, joystick.getRawAxis(1) * throttle);
-                    SmartDashboard.putString("Axis 2", joystick.getRawAxis(2) + "%");
-                    SmartDashboard.putString("Axis 1", joystick.getRawAxis(1) + "%");
-                    SmartDashboard.putString("Drive Speed", throttle + "%");
-                });
+        return run(() -> 
+        {
+            double rawThrottle = joystick.getThrottle();
+            double throttle = Math.abs((rawThrottle - 1) / 2);
+            ArcadeDrive(joystick.getRawAxis(2) * throttle, joystick.getRawAxis(1) * throttle);
+            SmartDashboard.putString("Drive Speed", throttle + "%");
+            SmartDashboard.putString("Left Frequency", "" + LeftEncoder.getAbsolutePosition());
+            SmartDashboard.putString("Right Frequency", "" + RightEncoder.getDistance());
+        });
     }
 
     public void StopDrive() 
