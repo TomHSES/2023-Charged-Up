@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.FalconSystem;
+import frc.robot.subsystems.IntakeArmSystem;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class FalconSystemRev extends CommandBase 
 {
-    public FalconSystem FalconSystem;
+    public IntakeArmSystem FalconSystem;
 
     private boolean HasInit = false;
 
@@ -18,7 +18,7 @@ public class FalconSystemRev extends CommandBase
 
     public double IncrementSpeed;
 
-    public FalconSystemRev(FalconSystem falconSystem, double targetSpeed, double incrementSpeed) 
+    public FalconSystemRev(IntakeArmSystem falconSystem, double targetSpeed, double incrementSpeed) 
     {
         FalconSystem = falconSystem;
         TargetSpeed = targetSpeed;

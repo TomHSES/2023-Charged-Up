@@ -3,18 +3,21 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Utils.MathUtils;
 
-public class FalconSystem extends SubsystemBase {
-
+public class IntakeArmSystem extends SubsystemBase 
+{
     public TalonFX FalconMotor;
+
+    public PIDController ArmController;
 
     public double CurrentSpeed;
 
-    public FalconSystem(int falconCANID) 
+    public IntakeArmSystem(int falconCANID) 
     {
         FalconMotor = new TalonFX(falconCANID); 
         CurrentSpeed = 0;
