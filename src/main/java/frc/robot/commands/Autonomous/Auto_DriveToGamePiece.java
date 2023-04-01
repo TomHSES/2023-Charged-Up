@@ -9,7 +9,7 @@ public class Auto_DriveToGamePiece extends CommandBase
 {
     public boolean HasInit;
 
-    public int ObtainPosition;
+    public int MovementState;
 
     public GyroscopeSystem GyroscopeSystem;
 
@@ -18,15 +18,13 @@ public class Auto_DriveToGamePiece extends CommandBase
     // Assumes the robot is positioned at it's assigned AutonomousConstant.StartingPosition
     public Auto_DriveToGamePiece(GyroscopeSystem gyroscopeSystem, TankDriveSystem tankDriveSystem, int obtainPosition)
     {
-        ObtainPosition = obtainPosition;
+        MovementState = obtainPosition - AutonomousConstants.StartingPosition;
     }
 
     @Override
     public void execute()
     {
-        int movementState = ObtainPosition - AutonomousConstants.StartingPosition;
-
-        if (movementState == 0)
+        if (MovementState == 0)
         {
             if (TankDriveSystem.RightEncoder.getDistance() < 20)
             {
@@ -39,4 +37,32 @@ public class Auto_DriveToGamePiece extends CommandBase
         }
     }
 
+    @Override
+    public void end(boolean interrupted)
+    {
+        
+    }
+
+    @Override
+    public boolean isFinished()
+    {
+        switch (MovementState)
+        {
+            case 0:
+            {
+                if (TankDriveSystem.LeftEncoder.getDistance() > 20 || TankDriveSystem.RightEncoder.getDistance() > 20)
+                {
+                    return true;
+                }
+            }
+            break;
+
+            default:
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

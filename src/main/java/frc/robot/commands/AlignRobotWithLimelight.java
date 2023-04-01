@@ -1,8 +1,8 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.TankDriveSystem;
-import frc.robot.LaunchConstants;
 import frc.robot.Utils.MathUtils;
+import frc.robot.constants.LaunchConstants;
 import frc.robot.subsystems.GyroscopeSystem;
 import frc.robot.subsystems.LimelightSystem;
 import edu.wpi.first.math.MathUtil;
@@ -57,6 +57,7 @@ public class AlignRobotWithLimelight extends CommandBase
         Initialised = false;
     }
 
+    // Reduces the amount of nesting
     public double GetGyroscopeAngle()
     {
         return GyroscopeSystem.Gyroscope.getAngle();

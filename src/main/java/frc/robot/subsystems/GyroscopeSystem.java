@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LaunchConstants;
+import frc.robot.constants.LaunchConstants;
 
 public class GyroscopeSystem extends SubsystemBase 
 {
@@ -51,14 +51,30 @@ public class GyroscopeSystem extends SubsystemBase
         }
     }
 
-    public CommandBase CalibrateGyroscope(TankDriveSystem driveSystem) 
+    public void CalibrateGyro(TankDriveSystem driveSystem)
     {
-        return runOnce(() -> 
+        driveSystem.TankDrive(0, 0);
+        Gyroscope.calibrate();
+        Gyroscope.reset();
+
+        if (LaunchConstants.MPU)
         {
-            driveSystem.TankDrive(0, 0);
-            Gyroscope.calibrate();
-            Gyroscope.reset();
-        });
+            RecalibrateMPU.set(true);
+        }
+    }
+
+    public void ResetGyro()
+    {
+        Gyroscope.reset();
+        if (LaunchConstants.MPU)
+        {
+            //RecalibrateMPU.set(true);
+        }
+    }
+
+    public CommandBase Command_CalibrateGyroscope(TankDriveSystem driveSystem) 
+    {
+        return runOnce(() -> CalibrateGyro(driveSystem));
     }
 
     public CommandBase MPUListen() 

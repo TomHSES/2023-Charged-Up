@@ -7,9 +7,11 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.constants.GeneralConstants;
+import frc.robot.constants.LaunchConstants;
 
 /*
 Handles all things related to drive trains
@@ -41,25 +43,40 @@ public class TankDriveSystem extends SubsystemBase
 
         Drive = new DifferentialDrive(LeftMotorController, RightMotorController);
 
-        LeftEncoder = new DutyCycleEncoder(leftFrontChannel);
-        RightEncoder = new DutyCycleEncoder(rightFrontChannel);
+        LeftEncoder = new DutyCycleEncoder(leftBackChannel);
+        LeftEncoder.setDistancePerRotation(GeneralConstants.kDriveEncoderToFeetConversionFactor);
+
+        RightEncoder = new DutyCycleEncoder(rightBackChannel);
+        RightEncoder.setDistancePerRotation(GeneralConstants.kDriveEncoderToFeetConversionFactor);
     }
 
     /**
-     * @return A simple driving mechanism utilizing the Logitech Joystick's 
-     * ability to move in a circular manner, as well as it's ability to 'twist' 
+     * @return A mechanism that simply implement driving for both Logitech Joystick and Controller
+     * Alternate between controller type through modifying the LaunchConstants
      */
-    public CommandBase TwistDrive(CommandJoystick joystick) 
+    public CommandBase DefaultDrive(CommandJoystick joystick, CommandXboxController controller) 
     {
         return run(() -> 
         {
-            double rawThrottle = joystick.getThrottle();
-            double throttle = Math.abs((rawThrottle - 1) / 2);
-            ArcadeDrive(joystick.getRawAxis(2) * throttle, joystick.getRawAxis(1) * throttle);
-            SmartDashboard.putString("Drive Speed", throttle + "%");
+            if (LaunchConstants.Controller)
+            {
+                ArcadeDrive(controller.getRawAxis(3), controller.getRawAxis(1));
+            }
+            else
+            {
+                double rawThrottle = joystick.getThrottle();
+                double throttle = Math.abs((rawThrottle - 1) / 2);
+                ArcadeDrive(joystick.getRawAxis(2) * throttle, joystick.getRawAxis(1) * throttle);
+            }
+
             SmartDashboard.putString("Left Frequency", "" + LeftEncoder.getAbsolutePosition());
             SmartDashboard.putString("Right Frequency", "" + RightEncoder.getDistance());
         });
+    }
+
+    public double EncoderToFeet(double encoderInput)
+    {
+        return encoderInput / 1000;
     }
 
     public void StopDrive() 

@@ -2,12 +2,15 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.GeneralConstants;
+import frc.robot.constants.ElevatorConstants;
+import frc.robot.constants.LaunchConstants;
 
 public class VerticalElevatorSystem extends SubsystemBase
 {
@@ -27,22 +30,15 @@ public class VerticalElevatorSystem extends SubsystemBase
         ElevatorMotor.restoreFactoryDefaults();
 
         Encoder = ElevatorMotor.getEncoder();
-        ElevatorController = new PIDController(canID, canID, canID);
+        ElevatorController = new PIDController(ElevatorConstants.kVerticalElevatorControllerP, ElevatorConstants.kVerticalElevatorControllerI, ElevatorConstants.kVerticalElevatorControllerD);
 
-        Encoder.setPositionConversionFactor(GeneralConstants.kVerticalElevatorPositionConversionFactor);
-        Encoder.setVelocityConversionFactor(velConvFactor);
+        Encoder.setPositionConversionFactor(ElevatorConstants.kVerticalElevatorPositionConversionFactor);
+        Encoder.setVelocityConversionFactor(ElevatorConstants.kVerticalElevatorVelocityConversionFactor);
 
-        PIDController.setP(p);
-        PIDController.setI(i);
-        PIDController.setD(d);
-        PIDController.setFF(ff);
-        PIDController.setOutputRange(-outPutRange, outPutRange);
-        PIDController.setReference(outPutRange, ControlType.kPosition);
+        ElevatorMotor.setIdleMode(IdleMode.kBrake);
+        ElevatorMotor.setSmartCurrentLimit(50);
 
-        SparkMax.setIdleMode(IdleMode.kCoast);
-        SparkMax.setSmartCurrentLimit(50);
-
-        SparkMax.burnFlash();
+        ElevatorMotor.burnFlash();
 
         Encoder.setPosition(0);
     }
@@ -50,6 +46,10 @@ public class VerticalElevatorSystem extends SubsystemBase
     @Override
     public void periodic()
     {
-
+        if (LaunchConstants.Log_ElevatorSystems)
+        {
+            SmartDashboard.putNumber("VE Inertia", ElevatorConstants.VerticalMotorInertia);
+            SmartDashboard.putNumber("VE Encoder Position", Encoder.getPosition());
+        }
     }
 }
