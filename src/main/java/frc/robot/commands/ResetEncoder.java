@@ -3,7 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.GyroscopeSystem;
-import frc.robot.subsystems.IntakeArmSystem;
+import frc.robot.subsystems.WristSystem;
 import frc.robot.subsystems.TankDriveSystem;
 
 public class ResetEncoder extends CommandBase
@@ -30,10 +30,10 @@ public class ResetEncoder extends CommandBase
             GyroscopeSystem gyroscopeSystem = (GyroscopeSystem)Subsystem;
             gyroscopeSystem.ResetGyro();
         }
-        else if (Subsystem instanceof IntakeArmSystem)
+        else if (Subsystem instanceof WristSystem)
         {
-            IntakeArmSystem intakeArmSystem = (IntakeArmSystem)Subsystem;
-            intakeArmSystem.FalconMotor.getSensorCollection().setIntegratedSensorPosition(0, 30);
+            WristSystem intakeArmSystem = (WristSystem)Subsystem;
+            intakeArmSystem.WristMotor.getSensorCollection().setIntegratedSensorPosition(0, 30);
         }
     }
 

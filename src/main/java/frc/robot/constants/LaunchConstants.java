@@ -14,5 +14,5 @@ public final class LaunchConstants
 
     public static boolean Log_ElevatorSystems = true;
 
-    public static boolean Log_IntakeArmSystem = true;
+    public static boolean Log_WristSystem = true;
 }

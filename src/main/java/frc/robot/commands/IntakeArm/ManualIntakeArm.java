@@ -4,15 +4,15 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ElevatorSystem;
-import frc.robot.subsystems.IntakeArmSystem;
+import frc.robot.subsystems.WristSystem;
 
 public class ManualIntakeArm extends CommandBase
 {
-    public IntakeArmSystem ElevatorSystem;
+    public WristSystem ElevatorSystem;
 
     public double Speed;
 
-    public ManualIntakeArm(IntakeArmSystem elevatorSystem, double speed)
+    public ManualIntakeArm(WristSystem elevatorSystem, double speed)
     {
         ElevatorSystem = elevatorSystem;
         Speed = speed;
@@ -22,12 +22,12 @@ public class ManualIntakeArm extends CommandBase
     @Override
     public void execute()
     {
-        ElevatorSystem.FalconMotor.set(TalonFXControlMode.PercentOutput, Speed);
+        ElevatorSystem.WristMotor.set(TalonFXControlMode.PercentOutput, Speed);
     }
 
     @Override
     public void end(boolean interrupted)
     {
-        ElevatorSystem.FalconMotor.set(TalonFXControlMode.PercentOutput, 0);
+        ElevatorSystem.WristMotor.set(TalonFXControlMode.PercentOutput, 0);
     }
 }
