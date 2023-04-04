@@ -34,7 +34,7 @@ public class RotateWrist extends CommandBase
             return;
         }
 
-        WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, Velocity);
+        //WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, Velocity);
     }
 
     @Override

@@ -65,6 +65,7 @@ public class TankDriveSystem extends SubsystemBase
             else
             {
                 double rawThrottle = joystick.getThrottle();
+                SmartDashboard.putString("Throttle", "" + rawThrottle);
                 double throttle = Math.abs((rawThrottle - 1) / 2);
                 ArcadeDrive(joystick.getRawAxis(2) * throttle, joystick.getRawAxis(1) * throttle);
             }

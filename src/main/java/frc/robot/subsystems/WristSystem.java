@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.LaunchConstants;
 
@@ -22,9 +23,17 @@ public class WristSystem extends SubsystemBase
         PneumaticBrake.set(Value.kReverse);
     }
 
+    boolean active = false;
+
     public void TogglePneumaticBrake(boolean active)
     {
-        PneumaticBrake.set(active ? Value.kReverse : Value.kOff);
+        PneumaticBrake.set(active ? Value.kForward : Value.kReverse);
+    }
+
+    public CommandBase TogglePneumaticBrake_Command()
+    {
+        active = !active;
+        return runOnce(() -> TogglePneumaticBrake(active));
     }
 
     @Override

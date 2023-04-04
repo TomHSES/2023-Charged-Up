@@ -8,6 +8,7 @@ import frc.robot.commands.Elevator.CalibrateVerticalElevatorSystem;
 import frc.robot.commands.Elevator.ManualElevatorSystem;
 import frc.robot.commands.Elevator.MoveHorizontalElevatorSystem;
 import frc.robot.commands.Elevator.RotateVerticalElevatorSystem;
+import frc.robot.commands.Wrist.RotateWrist;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.LaunchConstants;
 import frc.robot.subsystems.TankDriveSystem;
@@ -49,8 +50,6 @@ public class RobotContainer
 
     public HorizontalElevatorSystem HorizontalElevator;
 
-    public VerticalElevatorSystem VerticalElevatorSystem;
-
     public WristSystem WristSystem;
 
     public Compressor Compressor;
@@ -67,14 +66,14 @@ public class RobotContainer
     public void InitialiseSystems() 
     {
         DriveSystem = new TankDriveSystem(2, 4, 3, 1, 9, 8);
-        ClawSystem = new ClawSystem(24, 25, 10, 3, 4);
+        ClawSystem = new ClawSystem(24, 25, 10, 1, 2);
         GyroscopeSystem = new GyroscopeSystem();
         GyroscopeSystem.CalibrateGyro(DriveSystem);
        // Test_FalconSystem = new VelocityFalconSystem(8, "Shooter");
        // LimelightSystem = new LimelightSystem();
         VerticalElevator = new VerticalElevatorSystem(22);
         HorizontalElevator = new HorizontalElevatorSystem(23);
-        WristSystem = new WristSystem(62, 1, 2);
+        WristSystem = new WristSystem(62, 3, 4);
         //Compressor = new Compressor(PneumaticsModuleType.CTREPCM);
         //Compressor.enableDigital();
 
@@ -87,6 +86,8 @@ public class RobotContainer
             Joystick = new CommandJoystick(0);
         }
     }
+
+    public boolean Brake = false;
 
     /**
      * Use this method to define your trigger->command mappings. Triggers can be
@@ -120,23 +121,23 @@ public class RobotContainer
             Joystick.button(8).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, 0.15));
 
             Joystick.button(3).whileTrue(new ManualElevatorSystem(VerticalElevator, Joystick));
-            Joystick.button(4).whileTrue(new CalibrateVerticalElevatorSystem(VerticalElevatorSystem));
+            Joystick.button(4).whileTrue(new CalibrateVerticalElevatorSystem(VerticalElevator));
 
             Joystick.button(5).whileTrue(ClawSystem.SpinMotors());
             Joystick.button(11).whileTrue(ClawSystem.ToggleClaw(Value.kForward));
             Joystick.button(12).whileTrue(ClawSystem.ToggleClaw(Value.kReverse));
 
-            //Joystick.button(11).whileTrue(new RotateWrist(WristSystem, 0.15));
-            //Joystick.button(12).whileTrue(new RotateWrist(WristSystem, -0.15));
+            Joystick.button(9).whileTrue(new RotateWrist(WristSystem, 0.15));
+            Joystick.button(10).onTrue(WristSystem.TogglePneumaticBrake_Command());//new RotateWrist(WristSystem, -0.15));
 
-            Joystick.button(9).whileTrue(new RotateVerticalElevatorSystem(VerticalElevatorSystem, 0));
-            Joystick.button(10).whileTrue(new RotateVerticalElevatorSystem(VerticalElevatorSystem, ElevatorConstants.VerticalElevatorTopPosition));
+            //Joystick.button(9).whileTrue(new RotateVerticalElevatorSystem(VerticalElevator, 0));
+            //Joystick.button(10).whileTrue(new RotateVerticalElevatorSystem(VerticalElevator, ElevatorConstants.VerticalElevatorTopPosition));
         }
     }
 
     public void Finalise() 
     {
-        DriveSystem.setDefaultCommand(DriveSystem.DefaultDrive(Joystick, Controller));
+       // DriveSystem.setDefaultCommand(DriveSystem.DefaultDrive(Joystick, Controller));
     }
 
     public Command getAutonomousCommand() 
