@@ -1,6 +1,9 @@
 package frc.robot.commands.Elevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Utils.MathUtils;
 import frc.robot.constants.ElevatorConstants;
@@ -18,10 +21,10 @@ public class RotateVerticalElevatorSystem extends CommandBase
 
     public double CalculatedPositionalIncrement;
 
-    public RotateVerticalElevatorSystem(VerticalElevatorSystem elevatorSystem, double referencePos, double p, double i, double d)
+    public RotateVerticalElevatorSystem(VerticalElevatorSystem elevatorSystem, double referencePos)
     {
         Elevator = elevatorSystem;
-        PIDController = new PIDController(p, i, d);
+        PIDController = new PIDController(ElevatorConstants.kVerticalElevatorControllerP, ElevatorConstants.kVerticalElevatorControllerI, ElevatorConstants.kVerticalElevatorControllerD);
         PIDController.setSetpoint(referencePos);
         PIDController.setTolerance(Threshold);
     }
@@ -29,8 +32,8 @@ public class RotateVerticalElevatorSystem extends CommandBase
     @Override
     public void execute()
     {
-        CalculatedPositionalIncrement = PIDController.calculate(Elevator.Encoder.getPosition());
-        double motorSpeed = Elevator.Encoder.getVelocityConversionFactor() * CalculatedPositionalIncrement;
+        CalculatedPositionalIncrement = PIDController.calculate(Elevator.GetEncoderPosition());
+        double motorSpeed = ElevatorConstants.kVerticalElevatorVelocityConversionFactor * CalculatedPositionalIncrement;
         boolean atSetpoint = PIDController.atSetpoint();
         if (Elevator.ElevatorLimitSwitch.get() || atSetpoint)
         {
@@ -50,7 +53,7 @@ public class RotateVerticalElevatorSystem extends CommandBase
         {
             motorSpeed += ElevatorConstants.VerticalMotorInertia;
         }
-        Elevator.ElevatorMotor.set(motorSpeed);
+        Elevator.ElevatorMotor.set(TalonFXControlMode.PercentOutput, motorSpeed);
     }
 
     @Override

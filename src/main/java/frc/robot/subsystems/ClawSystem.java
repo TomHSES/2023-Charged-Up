@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -8,40 +12,43 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClawSystem extends SubsystemBase 
 {
-    public DoubleSolenoid RightSolenoid;
+    public CANSparkMax LeftMotor;
 
-    public DoubleSolenoid LeftSolenoid;
+    public RelativeEncoder LeftEncoder;
 
-    public ClawSystem(int moduleCANID, int forwardChannelPort, int reverseChannelPort) 
+    public CANSparkMax RightMotor;
+
+    public RelativeEncoder RightEncoder;
+
+    public DoubleSolenoid Piston;
+
+    public double MotorSpeed = 0.33;
+
+    public ClawSystem(int leftNEOCanID, int rightNEOCanID, int pcmCanID, int pistonForward, int pistonReverse) 
     {
-        //LeftSolenoid = new DoubleSolenoid(moduleCANID, PneumaticsModuleType.CTREPCM, 0, 1);
-        RightSolenoid = new DoubleSolenoid(moduleCANID, PneumaticsModuleType.CTREPCM, 1, 2);
+        LeftMotor = new CANSparkMax(leftNEOCanID, MotorType.kBrushless);
+        RightMotor = new CANSparkMax(rightNEOCanID, MotorType.kBrushless);
+        Piston = new DoubleSolenoid(pcmCanID, PneumaticsModuleType.CTREPCM, pistonForward, pistonReverse);
     }
 
-    public CommandBase SolenoidOff() 
+    public CommandBase SpinMotors()
     {
-        return runOnce(() -> 
+        return runEnd(() ->
         {
-            //LeftSolenoid.set(Value.kOff);
-            RightSolenoid.set(Value.kOff);
+            LeftMotor.set(MotorSpeed);
+            RightMotor.set(MotorSpeed);
+        }, () ->
+        {
+            LeftMotor.set(0);
+            RightMotor.set(0);
         });
     }
 
-    public CommandBase SolenoidForward()
+    public CommandBase ToggleClaw(Value clawMode)
     {
         return runOnce(() -> 
         {
-            //LeftSolenoid.set(Value.kForward);
-            RightSolenoid.set(Value.kForward);
-        });
-    }
-
-    public CommandBase SolenoidReverse()
-    {
-        return runOnce(() -> 
-        {
-            //LeftSolenoid.set(Value.kReverse);
-            RightSolenoid.set(Value.kReverse);
+            Piston.set(clawMode);
         });
     }
 }

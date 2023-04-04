@@ -1,5 +1,7 @@
 package frc.robot.commands.Elevator;
 
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.ElevatorConstants;
@@ -34,13 +36,13 @@ public class IdleVerticalElevatorSystem extends CommandBase
             return;
         }
 
-        Elevator.ElevatorMotor.set(ElevatorConstants.VerticalMotorInertia);
+        Elevator.ElevatorMotor.set(TalonFXControlMode.PercentOutput, ElevatorConstants.VerticalMotorInertia);
     }
 
     @Override
     public void end(boolean interrupted) 
     {
-        Elevator.ElevatorMotor.set(0);
+        Elevator.ElevatorMotor.set(TalonFXControlMode.PercentOutput, 0);
     }
 
     @Override

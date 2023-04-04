@@ -31,7 +31,7 @@ public class TankDriveSystem extends SubsystemBase
 
     public final DifferentialDrive Drive;
 
-    public TankDriveSystem(int leftFrontChannel, int leftBackChannel, int rightFrontChannel, int rightBackChannel) 
+    public TankDriveSystem(int leftFrontChannel, int leftBackChannel, int rightFrontChannel, int rightBackChannel, int leftEncoder, int rightEncoder) 
     {
         LeftFront_Motor = new WPI_VictorSPX(leftFrontChannel);
         LeftBack_Motor = new WPI_VictorSPX(leftBackChannel);
@@ -43,10 +43,10 @@ public class TankDriveSystem extends SubsystemBase
 
         Drive = new DifferentialDrive(LeftMotorController, RightMotorController);
 
-        LeftEncoder = new DutyCycleEncoder(leftBackChannel);
+        LeftEncoder = new DutyCycleEncoder(leftEncoder);
         LeftEncoder.setDistancePerRotation(GeneralConstants.kDriveEncoderToFeetConversionFactor);
 
-        RightEncoder = new DutyCycleEncoder(rightBackChannel);
+        RightEncoder = new DutyCycleEncoder(rightEncoder);
         RightEncoder.setDistancePerRotation(GeneralConstants.kDriveEncoderToFeetConversionFactor);
     }
 

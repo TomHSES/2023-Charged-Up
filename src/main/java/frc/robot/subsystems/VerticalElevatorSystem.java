@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -14,9 +15,7 @@ import frc.robot.constants.LaunchConstants;
 
 public class VerticalElevatorSystem extends SubsystemBase
 {
-    public final CANSparkMax ElevatorMotor;
-
-    public final RelativeEncoder Encoder;
+    public final TalonFX ElevatorMotor;
 
     public DigitalInput ElevatorLimitSwitch;
 
@@ -26,21 +25,14 @@ public class VerticalElevatorSystem extends SubsystemBase
 
     public VerticalElevatorSystem(int canID)
     {
-        ElevatorMotor = new CANSparkMax(canID, MotorType.kBrushless);
-        ElevatorMotor.restoreFactoryDefaults();
-
-        Encoder = ElevatorMotor.getEncoder();
+        ElevatorMotor = new TalonFX(canID);
         ElevatorController = new PIDController(ElevatorConstants.kVerticalElevatorControllerP, ElevatorConstants.kVerticalElevatorControllerI, ElevatorConstants.kVerticalElevatorControllerD);
+        ElevatorLimitSwitch = new DigitalInput(0);
+    }
 
-        Encoder.setPositionConversionFactor(ElevatorConstants.kVerticalElevatorPositionConversionFactor);
-        Encoder.setVelocityConversionFactor(ElevatorConstants.kVerticalElevatorVelocityConversionFactor);
-
-        ElevatorMotor.setIdleMode(IdleMode.kBrake);
-        ElevatorMotor.setSmartCurrentLimit(50);
-
-        ElevatorMotor.burnFlash();
-
-        Encoder.setPosition(0);
+    public double GetEncoderPosition()
+    {
+        return ElevatorMotor.getSensorCollection().getIntegratedSensorPosition();
     }
 
     @Override
@@ -49,7 +41,7 @@ public class VerticalElevatorSystem extends SubsystemBase
         if (LaunchConstants.Log_ElevatorSystems)
         {
             SmartDashboard.putNumber("VE Inertia", ElevatorConstants.VerticalMotorInertia);
-            SmartDashboard.putNumber("VE Encoder Position", Encoder.getPosition());
+            SmartDashboard.putNumber("VE Encoder Position", GetEncoderPosition());
         }
     }
 }

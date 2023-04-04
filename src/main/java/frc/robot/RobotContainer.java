@@ -4,31 +4,25 @@
 
 package frc.robot;
 
-import frc.robot.commands.AlignRobotWithLimelight;
-import frc.robot.commands.CalibrateElevatorSystem;
-import frc.robot.commands.CancelAllCommands;
-import frc.robot.commands.ResetEncoder;
-import frc.robot.commands.RotateFalconToPosition;
 import frc.robot.commands.Elevator.CalibrateVerticalElevatorSystem;
 import frc.robot.commands.Elevator.ManualElevatorSystem;
-import frc.robot.commands.IntakeArm.ManualIntakeArm;
+import frc.robot.commands.Elevator.MoveHorizontalElevatorSystem;
+import frc.robot.commands.Elevator.RotateVerticalElevatorSystem;
+import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.LaunchConstants;
 import frc.robot.subsystems.TankDriveSystem;
-import frc.robot.subsystems.SparkMaxSystem;
-import frc.robot.subsystems.IntakeArmSystem;
+import frc.robot.subsystems.WristSystem;
 import frc.robot.subsystems.ClawSystem;
-import frc.robot.subsystems.ElevatorSystem;
+import frc.robot.subsystems.HorizontalElevatorSystem;
 import frc.robot.subsystems.GyroscopeSystem;
 import frc.robot.subsystems.LimelightSystem;
-import frc.robot.subsystems.VelocityFalconSystem;
 import frc.robot.subsystems.VerticalElevatorSystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -45,25 +39,23 @@ public class RobotContainer
 
     public GyroscopeSystem GyroscopeSystem;
 
-    public ClawSystem DoubleSolenoidSystem;
-
-    public VelocityFalconSystem Test_FalconSystem;
-
     public CommandJoystick Joystick;
 
     public CommandXboxController Controller;
 
     public LimelightSystem LimelightSystem;
 
-    public ElevatorSystem VerticalElevator;
+    public VerticalElevatorSystem VerticalElevator;
 
-    public ElevatorSystem HorizontalElevator;
+    public HorizontalElevatorSystem HorizontalElevator;
 
     public VerticalElevatorSystem VerticalElevatorSystem;
 
-    public IntakeArmSystem IntakeArmSystem;
+    public WristSystem WristSystem;
 
     public Compressor Compressor;
+
+    public ClawSystem ClawSystem;
 
     public RobotContainer() 
     {
@@ -74,15 +66,15 @@ public class RobotContainer
 
     public void InitialiseSystems() 
     {
-        DriveSystem = new TankDriveSystem(2, 4, 3, 1);
-        DoubleSolenoidSystem = new ClawSystem(10, 0, 1);
+        DriveSystem = new TankDriveSystem(2, 4, 3, 1, 9, 8);
+        ClawSystem = new ClawSystem(24, 25, 10, 3, 4);
         GyroscopeSystem = new GyroscopeSystem();
         GyroscopeSystem.CalibrateGyro(DriveSystem);
        // Test_FalconSystem = new VelocityFalconSystem(8, "Shooter");
        // LimelightSystem = new LimelightSystem();
-        VerticalElevator = new ElevatorSystem(22);
-        HorizontalElevator = new ElevatorSystem(23);
-        IntakeArmSystem = new IntakeArmSystem(62);
+        VerticalElevator = new VerticalElevatorSystem(22);
+        HorizontalElevator = new HorizontalElevatorSystem(23);
+        WristSystem = new WristSystem(62, 1, 2);
         //Compressor = new Compressor(PneumaticsModuleType.CTREPCM);
         //Compressor.enableDigital();
 
@@ -124,27 +116,21 @@ public class RobotContainer
         }
         else 
         {
-            Joystick.button(7).whileTrue(new ManualElevatorSystem(HorizontalElevator, 0.05));
-            Joystick.button(8).whileTrue(new ManualElevatorSystem(VerticalElevator, 1));
+            Joystick.button(7).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, -0.15));
+            Joystick.button(8).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, 0.15));
 
-            Joystick.button(9).whileTrue(new ManualElevatorSystem(HorizontalElevator, -0.15));
-            Joystick.button(10).whileTrue(new ManualElevatorSystem(VerticalElevator, -0.1));
+            Joystick.button(3).whileTrue(new ManualElevatorSystem(VerticalElevator, Joystick));
+            Joystick.button(4).whileTrue(new CalibrateVerticalElevatorSystem(VerticalElevatorSystem));
 
-            Joystick.button(11).whileTrue(new ManualIntakeArm(IntakeArmSystem, 0.15));
-            Joystick.button(12).whileTrue(new ManualIntakeArm(IntakeArmSystem, -0.15));
+            Joystick.button(5).whileTrue(ClawSystem.SpinMotors());
+            Joystick.button(11).whileTrue(ClawSystem.ToggleClaw(Value.kForward));
+            Joystick.button(12).whileTrue(ClawSystem.ToggleClaw(Value.kReverse));
 
+            //Joystick.button(11).whileTrue(new RotateWrist(WristSystem, 0.15));
+            //Joystick.button(12).whileTrue(new RotateWrist(WristSystem, -0.15));
 
-            Joystick.button(5).onTrue(DoubleSolenoidSystem.SolenoidForward());
-            Joystick.button(6).onTrue(DoubleSolenoidSystem.SolenoidReverse());
-            Joystick.button(4).onTrue(DoubleSolenoidSystem.SolenoidOff());
-
-          //  Joystick.button(11).whileTrue(AlignRobotWithLimelight.ScheduleCommand(LimelightSystem, DriveSystem,
-                 //   GyroscopeSystem, 0.5, 0.025, 0.01, 0));
-           // Joystick.button(10).whileTrue(CalibrateElevatorSystem.ScheduleCalibration(VerticalElevator));
-           // Joystick.button(9).whileTrue(CalibrateElevatorSystem.ScheduleCalibration(HorizontalElevator));
-          //  Joystick.button(12).whileTrue(new CalibrateVerticalElevatorSystem(VerticalElevatorSystem));
-            Joystick.button(3).onTrue(new CancelAllCommands());
-           // Joystick.button(4).onTrue(LimelightSystem.TogglePipeline());
+            Joystick.button(9).whileTrue(new RotateVerticalElevatorSystem(VerticalElevatorSystem, 0));
+            Joystick.button(10).whileTrue(new RotateVerticalElevatorSystem(VerticalElevatorSystem, ElevatorConstants.VerticalElevatorTopPosition));
         }
     }
 

@@ -1,6 +1,6 @@
 package frc.robot.commands.Elevator;
 
-import com.revrobotics.CANSparkMax.IdleMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -26,9 +26,10 @@ public class CalibrateVerticalElevatorSystem extends CommandBase
     @Override
     public void execute()
     {
-        Elevator.ElevatorMotor.set(CurrentSpeed);
+        Elevator.ElevatorMotor.set(TalonFXControlMode.PercentOutput, CurrentSpeed);
 
-        if (Math.abs(Elevator.Encoder.getPosition() - OldEncoderValue) <= ElevatorConstants.kSparkMaxEncoderError
+        double encoderPosition = Elevator.GetEncoderPosition();
+        if (Math.abs(encoderPosition - OldEncoderValue) <= ElevatorConstants.kSparkMaxEncoderError
         || !Double.isNaN(ElevatorConstants.VerticalMotorInertia) && CurrentSpeed < ElevatorConstants.VerticalMotorInertia + 0.05)
         {
             CurrentSpeed = MathUtil.clamp(CurrentSpeed + 0.01, -MaxSpeed, MaxSpeed);
@@ -39,16 +40,14 @@ public class CalibrateVerticalElevatorSystem extends CommandBase
             ElevatorConstants.VerticalMotorInertia = CurrentSpeed - 0.01;
         }
 
-        OldEncoderValue = Elevator.Encoder.getPosition();
+        OldEncoderValue = encoderPosition;
     }
 
     @Override
     public void end(boolean interrupted) 
     {
-        ElevatorConstants.VerticalElevatorBottomPosition = -Elevator.Encoder.getPosition();
-        Elevator.ElevatorMotor.set(0);
-        Elevator.Encoder.setPosition(0);
-        Elevator.ElevatorMotor.setIdleMode(IdleMode.kBrake);
+        ElevatorConstants.VerticalElevatorTopPosition = Elevator.GetEncoderPosition();
+        Elevator.ElevatorMotor.set(TalonFXControlMode.PercentOutput, ElevatorConstants.VerticalMotorInertia);
     }
 
     @Override

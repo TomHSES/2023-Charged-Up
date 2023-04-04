@@ -1,30 +1,35 @@
 package frc.robot.commands.Elevator;
 
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ElevatorSystem;
+import frc.robot.subsystems.VerticalElevatorSystem;
 
 public class ManualElevatorSystem extends CommandBase
 {
-    public ElevatorSystem ElevatorSystem;
+    public VerticalElevatorSystem ElevatorSystem;
 
-    public double Speed;
+    public CommandJoystick Joystick;
 
-    public ManualElevatorSystem(ElevatorSystem elevatorSystem, double speed)
+    public ManualElevatorSystem(VerticalElevatorSystem elevatorSystem, CommandJoystick joystick)
     {
         ElevatorSystem = elevatorSystem;
-        Speed = speed;
+        Joystick = joystick;
         addRequirements(ElevatorSystem);
     }
     
     @Override
     public void execute()
     {
-        ElevatorSystem.ElevatorMotor.SparkMax.set(Speed);
+        double rawThrottle = Joystick.getThrottle();
+        ElevatorSystem.ElevatorMotor.set(TalonFXControlMode.PercentOutput, rawThrottle);
     }
 
     @Override
     public void end(boolean interrupted)
     {
-        ElevatorSystem.ElevatorMotor.SparkMax.set(0.0);
+        ElevatorSystem.ElevatorMotor.set(TalonFXControlMode.PercentOutput, 0.0);
     }
 }

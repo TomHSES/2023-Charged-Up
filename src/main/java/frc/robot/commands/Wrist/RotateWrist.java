@@ -8,21 +8,19 @@ import frc.robot.Utils.MathUtils;
 import frc.robot.constants.WristConstants;
 import frc.robot.subsystems.WristSystem;
 
-public class RotateWristAuto extends CommandBase
+public class RotateWrist extends CommandBase
 {
     public boolean HasInit;
 
     public WristSystem WristSystem;
 
-    public PIDController WristController;
+    public double Velocity;
 
-    public RotateWristAuto(WristSystem wristSystem, int desiredPosition, int tolerance)
+    public RotateWrist(WristSystem wristSystem, double velocity)
     {
         HasInit = false;
         WristSystem = wristSystem;
-        WristController = new PIDController(WristConstants.kWristControllerP, WristConstants.kWristControllerI, WristConstants.kWristControllerD);
-        WristController.setSetpoint(desiredPosition);
-        WristController.setTolerance(tolerance);
+        Velocity = velocity;
         addRequirements(WristSystem);
     }
 
@@ -36,20 +34,12 @@ public class RotateWristAuto extends CommandBase
             return;
         }
 
-        double rawGain = WristController.calculate(WristSystem.WristMotor.getSensorCollection().getIntegratedSensorPosition());
-        double clampedGain = MathUtils.Clamp(rawGain * WristConstants.kWristEncoderToDegreeConversionFactor, -WristConstants.kWristMaxSpeed, WristConstants.kWristMaxSpeed);
-        WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, clampedGain);
+        WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, Velocity);
     }
 
     @Override
     public void end(boolean interrupted)
     {
         WristSystem.TogglePneumaticBrake(true);
-    }
-
-    @Override
-    public boolean isFinished()
-    {
-        return HasInit && WristController.atSetpoint();
     }
 }
