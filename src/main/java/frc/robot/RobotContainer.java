@@ -8,8 +8,8 @@ import frc.robot.commands.Elevator.CalibrateVerticalElevatorSystem;
 import frc.robot.commands.Elevator.ManualElevatorSystem;
 import frc.robot.commands.Elevator.MoveHorizontalElevatorSystem;
 import frc.robot.commands.Wrist.RotateWrist;
+import frc.robot.commands.Wrist.RotateWrist_Uncontrolled;
 import frc.robot.commands.Scoring;
-import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.IDs;
 import frc.robot.constants.LaunchConstants;
 import frc.robot.subsystems.TankDriveSystem;
@@ -39,6 +39,8 @@ public class RobotContainer
     public GyroscopeSystem GyroscopeSystem;
 
     public CommandJoystick Joystick;
+
+    public CommandJoystick AltJoystick;
 
     public CommandXboxController Controller;
 
@@ -84,6 +86,11 @@ public class RobotContainer
         else
         {
             Joystick = new CommandJoystick(IDs.Port_Joystick);
+
+            if (LaunchConstants.CompetitionControls)
+            {
+                AltJoystick = new CommandJoystick(IDs.Port_AltJoystick);
+            }
         }
 
         if (LaunchConstants.Limelight)
@@ -123,6 +130,9 @@ public class RobotContainer
         }
         else if (LaunchConstants.CompetitionControls)
         {
+            // Joystick 0: Driver-preferred controls
+            // Joystick 1: Manual controls in case the controls assigned to Joystick 0 breaks
+
             Joystick.button(9).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, -0.15));
             Joystick.button(10).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, 0.10));
 
@@ -134,33 +144,51 @@ public class RobotContainer
             Joystick.button(5).whileTrue(ClawSystem.SpinMotors(-0.5));
             Joystick.button(11).onTrue(ClawSystem.TogglePistons_Command());
 
-            Joystick.button(6).whileTrue(new RotateWrist(WristSystem, -1));
-            Joystick.button(4).whileTrue(new RotateWrist(WristSystem, 1));
+            Joystick.button(6).whileTrue(new RotateWrist(WristSystem, -0.8, 0.5));
+            Joystick.button(4).whileTrue(new RotateWrist(WristSystem, -0.5, 0.8));
+
+            //-------------------------------------------------------------------------
+
+            AltJoystick.button(7).onTrue(ClawSystem.DisablePistons_Command());
+            AltJoystick.button(8).onTrue(ClawSystem.EnablePistons_Command());
+
+            boolean testing = true;
+
+            if (testing)
+            {
+                AltJoystick.button(9).onTrue(new RotateWrist_Uncontrolled(WristSystem, -0.8));
+                AltJoystick.button(10).onTrue(new RotateWrist_Uncontrolled(WristSystem, 0.8));
+
+                AltJoystick.button(3).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.45));
+                AltJoystick.button(4).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.4));
+
+                AltJoystick.button(5).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.35));
+                AltJoystick.button(6).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.3));
+            }
+            else
+            {
+                AltJoystick.button(9).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.66));
+                AltJoystick.button(10).whileTrue(new ManualElevatorSystem(VerticalElevator, -0.1));
+
+                AltJoystick.button(4).onTrue(new RotateWrist_Uncontrolled(WristSystem, -0.8));
+                AltJoystick.button(6).onTrue(new RotateWrist_Uncontrolled(WristSystem, 0.8));
+            }
         } 
         else 
         {
-            Joystick.button(7).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, -0.15));
-            Joystick.button(8).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, 0.15));
+            Joystick.button(9).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, -0.15));
+            Joystick.button(10).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, 0.10));
 
-            Joystick.button(3).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.66));
-            Joystick.button(4).whileTrue(new CalibrateVerticalElevatorSystem(VerticalElevator));
+            Joystick.button(7).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.66));
+            Joystick.button(8).whileTrue(new ManualElevatorSystem(VerticalElevator, -0.1));
 
-            Joystick.button(5).whileTrue(ClawSystem.SpinMotors(-0.33));
-            Joystick.button(6).onTrue(ClawSystem.TogglePistons_Command());
+            Joystick.button(12).onTrue(Scoring.ToggleScoringRoutine(true));
 
-            // Joystick.button(11).whileTrue(ClawSystem.ToggleClaw(Value.kForward));
-            // Joystick.button(12).whileTrue(ClawSystem.ToggleClaw(Value.kReverse));
+            Joystick.button(5).whileTrue(ClawSystem.SpinMotors(-0.5));
+            Joystick.button(11).onTrue(ClawSystem.TogglePistons_Command());
 
-            Joystick.button(11).whileTrue(new RotateWrist(WristSystem, -0.5));
-            Joystick.button(12).whileTrue(new RotateWrist(WristSystem, 0.5));
-            Joystick.button(9).onTrue(WristSystem.DisableBrakes_Command());
-            Joystick.button(10).onTrue(WristSystem.EnableBrakes_Command());
-
-            // Joystick.button(9).whileTrue(new
-            // RotateVerticalElevatorSystem(VerticalElevator, 0));
-            // Joystick.button(10).whileTrue(new
-            // RotateVerticalElevatorSystem(VerticalElevator,
-            // ElevatorConstants.VerticalElevatorTopPosition));
+            Joystick.button(6).whileTrue(new RotateWrist(WristSystem, -0.8, 0.5));
+            Joystick.button(4).whileTrue(new RotateWrist(WristSystem, -0.5, 0.8));
         }
     }
 

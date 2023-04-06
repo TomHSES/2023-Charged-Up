@@ -14,8 +14,4 @@ public final class WristConstants
 
     // Where the COM changes to an extent where the wrist falls in the opposite direction
     public static double kWristMidPosition = 12000;
-
-    public static double kAltSpeedExponent = 1 + (kWristMidPosition / kWristExtendedPosition);
-
-    public static double kAltWristExtendedPosition = Math.pow(kWristExtendedPosition, kAltSpeedExponent);
 }

@@ -4,6 +4,8 @@ public class IDs
 {
     public static int Port_Joystick = 0;
 
+    public static int Port_AltJoystick = 1;
+
     public static int Port_Controller = 0;
 
     public static int DriveMotor_LeftFront = 2;
