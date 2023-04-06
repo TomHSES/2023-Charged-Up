@@ -65,7 +65,8 @@ public class Robot extends TimedRobot
     @Override
     public void disabledInit()
     {
-        RobotContainer.WristSystem.TogglePneumaticBrake(false);
+        RobotContainer.VerticalElevator.ElevatorMotor.getSensorCollection().setIntegratedSensorPosition(0, 30);
+        RobotContainer.WristSystem.DisableBrakes();
     }
 
     @Override
@@ -102,6 +103,8 @@ public class Robot extends TimedRobot
         {
             Autonomous.cancel();
         }
+
+        RobotContainer.WristSystem.EnableBrakes();
 
         if (LaunchConstants.MPU)
         {

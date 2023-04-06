@@ -56,7 +56,7 @@ public class Auto_Drive extends CommandBase
             DriveController.reset();
         }
 
-        DriveGain = MathUtil.clamp(DriveController.calculate(DesiredDistance), -MaxSpeed, MaxSpeed);
+        DriveGain = MathUtil.clamp(DriveController.calculate(CurrentEncoderValue), -MaxSpeed, MaxSpeed);
         if (DriveController.atSetpoint())
         {
             TankDriveSystem.ArcadeDrive(0, 0);

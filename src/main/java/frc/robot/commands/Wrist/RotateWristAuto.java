@@ -1,4 +1,4 @@
-package frc.robot.commands.Wrist;
+/*package frc.robot.commands.Wrist;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
@@ -16,7 +16,7 @@ public class RotateWristAuto extends CommandBase
 
     public PIDController WristController;
 
-    public RotateWristAuto(WristSystem wristSystem, int desiredPosition, int tolerance)
+    public RotateWristAuto(WristSystem wristSystem, double desiredPosition, int tolerance)
     {
         HasInit = false;
         WristSystem = wristSystem;
@@ -31,7 +31,11 @@ public class RotateWristAuto extends CommandBase
     {
         if (!HasInit)
         {
-            WristSystem.TogglePneumaticBrake(false);
+            if (WristSystem.BrakeActive)
+            {
+                WristSystem.DisableBrakes();
+            }
+
             HasInit = true;
             return;
         }
@@ -44,7 +48,7 @@ public class RotateWristAuto extends CommandBase
     @Override
     public void end(boolean interrupted)
     {
-        WristSystem.TogglePneumaticBrake(true);
+        WristSystem.EnableBrakes();
     }
 
     @Override
@@ -52,4 +56,4 @@ public class RotateWristAuto extends CommandBase
     {
         return HasInit && WristController.atSetpoint();
     }
-}
+}*/

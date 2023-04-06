@@ -10,9 +10,12 @@ public final class WristConstants
 
     public static double kWristControllerTolerance = 1000;
 
-    // A value that's multiplied by the Falcon 500's built in position encoder value
-    // Ideally returns an accurate enough approximation for the angular change
-    public static double kWristEncoderToDegreeConversionFactor = 0.01;
+    public static double kWristExtendedPosition = 22500;
 
-    public static double kWristMaxSpeed = 0.33;
+    // Where the COM changes to an extent where the wrist falls in the opposite direction
+    public static double kWristMidPosition = 12000;
+
+    public static double kAltSpeedExponent = 1 + (kWristMidPosition / kWristExtendedPosition);
+
+    public static double kAltWristExtendedPosition = Math.pow(kWristExtendedPosition, kAltSpeedExponent);
 }

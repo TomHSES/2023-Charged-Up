@@ -26,11 +26,15 @@ public final class ElevatorConstants
 
     // The minimum percent speed of the big NEO motor required to counteract the gravity felt by the vertical elevator
     // Calibrated as a part of CalibrateVerticalElevatorSystem
-    public static double VerticalMotorInertia = Double.NaN;
+    public static double VerticalMotorInertia = 0.33;
 
-    public static double HorizontalMotorInertia = 0.02;
+    public static double HorizontalMotorInertia = -0.03;
 
-    public static double VerticalElevatorTopPosition = Double.NaN;
+    public static double VerticalElevatorTopPosition = 100000;
 
-    public static double HorizontalElevatorBottomPosition = Double.NaN;
+    public static double VertElevConePos = 78500;
+
+    public static double VertElevCubePos = 75000;
+
+    public static double HorizontalElevatorBottomPosition = 7.738;
 }

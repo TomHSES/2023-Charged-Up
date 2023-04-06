@@ -15,7 +15,7 @@ public class RotateVerticalElevatorSystem extends CommandBase
 
     public PIDController PIDController;
 
-    public double MaxSpeed = 0.5;
+    public double MaxSpeed = 0.75;
 
     public double Threshold;
 
@@ -35,7 +35,7 @@ public class RotateVerticalElevatorSystem extends CommandBase
         CalculatedPositionalIncrement = PIDController.calculate(Elevator.GetEncoderPosition());
         double motorSpeed = ElevatorConstants.kVerticalElevatorVelocityConversionFactor * CalculatedPositionalIncrement;
         boolean atSetpoint = PIDController.atSetpoint();
-        if (Elevator.ElevatorLimitSwitch.get() || atSetpoint)
+        if (atSetpoint)
         {
             motorSpeed = 0;
 

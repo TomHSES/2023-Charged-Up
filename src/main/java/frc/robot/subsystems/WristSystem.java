@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IDs;
 import frc.robot.constants.LaunchConstants;
+import frc.robot.constants.WristConstants;
 
 public class WristSystem extends SubsystemBase 
 {
@@ -23,18 +24,83 @@ public class WristSystem extends SubsystemBase
     {
         WristMotor = new TalonFX(IDs.WristMotor);
         PneumaticBrake = new DoubleSolenoid(IDs.PneumaticControlModule, PneumaticsModuleType.CTREPCM, IDs.WristBrakes_Forward, IDs.WristBrakes_Reverse);
+        DisableBrakes();
+    }
+
+    public double GetFalconPosition()
+    {
+        return WristMotor.getSensorCollection().getIntegratedSensorPosition();
+    }
+
+    // Min-Speed: Accounts for gravity while leaving a 'soft fall'
+    // Max-Speed: Accounts for gravity while the wrist is extended
+    public double CalculateWristSpeed(double minSpeed, double maxSpeed)
+    {
+        double currentWristPosition = GetFalconPosition();
+        return ((currentWristPosition * (maxSpeed - minSpeed)) / WristConstants.kWristExtendedPosition) + minSpeed;
+    }
+
+    public double CalculateWristSpeed_Alt(double minSpeed, double maxSpeed)
+    {
+        double exponent = 1 + WristConstants.kWristMidPosition / WristConstants.kWristExtendedPosition;
+        double currentWristPosition = GetFalconPosition();
+        return ((Math.pow(currentWristPosition, exponent) * (maxSpeed - minSpeed)) / WristConstants.kAltWristExtendedPosition) + minSpeed;
+    }
+
+    public void DisableBrakes()
+    {
         BrakeActive = false;
-        TogglePneumaticBrake(BrakeActive);
+        PneumaticBrake.set(Value.kForward);
     }
 
-    public void TogglePneumaticBrake(boolean active)
+    public CommandBase DisableBrakes_Command()
     {
-        PneumaticBrake.set(active ? Value.kForward : Value.kReverse);
+        return runOnce(() -> DisableBrakes());
     }
 
-    public CommandBase TogglePneumaticBrake_Command(boolean active)
+    public void EnableBrakes()
     {
-        return runOnce(() -> TogglePneumaticBrake(active));
+        BrakeActive = true;
+        PneumaticBrake.set(Value.kReverse);
+    }
+
+    public CommandBase EnableBrakes_Command()
+    {
+        return runOnce(() -> EnableBrakes());
+    }
+
+    public void ConfigureBrakes(boolean active)
+    {
+        if (active)
+        {
+            EnableBrakes();
+        }
+        else
+        {
+            DisableBrakes();
+        }
+    }
+
+    public CommandBase ConfigureBrakes_Command(boolean active)
+    {
+        return runOnce(() -> ConfigureBrakes(active));
+    }
+
+    public void ToggleBrakes()
+    {
+        if (BrakeActive)
+        {
+            DisableBrakes();
+        }
+        else
+        {
+            EnableBrakes();
+        }
+    }
+
+    public CommandBase ToggleBrakes_Command()
+    {
+        return runOnce(() -> ToggleBrakes());
     }
 
     @Override

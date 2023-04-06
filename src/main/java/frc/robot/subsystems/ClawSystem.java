@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -15,19 +14,18 @@ public class ClawSystem extends SubsystemBase
 {
     public CANSparkMax LeftMotor;
 
-    public RelativeEncoder LeftEncoder;
-
     public CANSparkMax RightMotor;
 
-    public RelativeEncoder RightEncoder;
-
     public DoubleSolenoid Piston;
+
+    public boolean PistonActive;
 
     public ClawSystem() 
     {
         LeftMotor = new CANSparkMax(IDs.ClawMotor_Left, MotorType.kBrushless);
         RightMotor = new CANSparkMax(IDs.ClawMotor_Right, MotorType.kBrushless);
         Piston = new DoubleSolenoid(IDs.PneumaticControlModule, PneumaticsModuleType.CTREPCM, IDs.ClawPistons_Forward, IDs.ClawPistons_Reverse);
+        DisablePistons();
     }
 
     public CommandBase SpinMotors(double motorSpeed)
@@ -43,11 +41,42 @@ public class ClawSystem extends SubsystemBase
         });
     }
 
-    public CommandBase ToggleClaw(Value clawMode)
+    public void EnablePistons()
     {
-        return runOnce(() -> 
+        PistonActive = true;
+        Piston.set(Value.kForward);
+    }
+
+    public CommandBase EnablePistons_Command()
+    {
+        return runOnce(() -> EnablePistons());
+    }
+
+    public void DisablePistons()
+    {
+        PistonActive = false;
+        Piston.set(Value.kReverse);
+    }
+
+    public CommandBase DisablePistons_Command()
+    {
+        return runOnce(() -> DisablePistons());
+    }
+
+    public void TogglePistons()
+    {
+        if (PistonActive)
         {
-            Piston.set(clawMode);
-        });
+            DisablePistons();
+        }
+        else
+        {
+            EnablePistons();
+        }
+    }
+
+    public CommandBase TogglePistons_Command()
+    {
+        return runOnce(() -> TogglePistons());
     }
 }

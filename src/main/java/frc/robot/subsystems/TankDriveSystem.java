@@ -48,6 +48,16 @@ public class TankDriveSystem extends SubsystemBase
         RightEncoder.setDistancePerRotation(GeneralConstants.kDriveEncoderToFeetConversionFactor);
     }
 
+    @Override
+    public void periodic()
+    {
+        if (LaunchConstants.Log_DriveTrain)
+        {
+            SmartDashboard.putNumber("Enc. Freq. L", LeftEncoder.getDistance());
+            SmartDashboard.putNumber("Enc. Freq. R", RightEncoder.getDistance());
+        }
+    }
+
     /**
      * @return A mechanism that simply implement driving for both Logitech Joystick and Controller
      * Alternate between controller type through modifying the LaunchConstants
@@ -72,12 +82,6 @@ public class TankDriveSystem extends SubsystemBase
                     SmartDashboard.putNumber("Raw Throttle", rawThrottle);
                 }
             }
-
-            if (LaunchConstants.Log_DriveTrain)
-            {
-                SmartDashboard.putNumber("Enc. Freq. L", LeftEncoder.getDistance());
-                SmartDashboard.putNumber("Enc. Freq. R", RightEncoder.getDistance());
-            }
         });
     }
 
@@ -94,7 +98,7 @@ public class TankDriveSystem extends SubsystemBase
         }
     }
 
-    public void ArcadeDrive(double speed, double rotation) 
+    public void ArcadeDrive(double rotation, double speed) 
     {
         if (!LaunchConstants.Safety_RestrictDriveTrain)
         {

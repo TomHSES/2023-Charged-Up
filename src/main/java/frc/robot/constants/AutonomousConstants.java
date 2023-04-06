@@ -1,7 +1,11 @@
 package frc.robot.constants;
 
+import frc.robot.datatypes.AutonomousRoutineMode;
+
 public final class AutonomousConstants 
 {
+    public static AutonomousRoutineMode AutonomousRoutine = AutonomousRoutineMode.None;
+    
     public static double kOnChargeStationAngle = 11.0;
 
     public static double kSlowDriveSpeed = GeneralConstants.kRobotDriveInertia + 0.1;

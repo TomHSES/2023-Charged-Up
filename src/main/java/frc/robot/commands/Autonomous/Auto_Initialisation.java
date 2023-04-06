@@ -36,7 +36,6 @@ public class Auto_Initialisation extends CommandBase
             GyroscopeSystem.CalibrateGyro(TankDriveSystem);
 
             AutonomousConstants.StartingPosition = (int)SmartDashboard.getNumber("Starting Position", -1);
-
             HasInit = true;
             return;
         }

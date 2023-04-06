@@ -24,19 +24,12 @@ public class RotateWrist extends CommandBase
     @Override
     public void execute()
     {
-        if (!HasInit)
-        {
-            WristSystem.TogglePneumaticBrake(false);
-            HasInit = true;
-            return;
-        }
-
-        WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, Velocity);
+        WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, WristSystem.CalculateWristSpeed(-0.5, 0.8));
     }
 
     @Override
     public void end(boolean interrupted)
     {
-        WristSystem.TogglePneumaticBrake(true);
+        WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, 0);
     }
 }
