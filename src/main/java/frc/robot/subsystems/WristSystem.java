@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.IDs;
 import frc.robot.constants.LaunchConstants;
 
 public class WristSystem extends SubsystemBase 
@@ -16,23 +17,23 @@ public class WristSystem extends SubsystemBase
 
     public DoubleSolenoid PneumaticBrake;
 
-    public WristSystem(int falconCanID, int brakeForwardPort, int brakeReversePort) 
-    {
-        WristMotor = new TalonFX(falconCanID);
-        PneumaticBrake = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, brakeForwardPort, brakeReversePort);
-        PneumaticBrake.set(Value.kReverse);
-    }
+    public boolean BrakeActive;
 
-    boolean active = false;
+    public WristSystem() 
+    {
+        WristMotor = new TalonFX(IDs.WristMotor);
+        PneumaticBrake = new DoubleSolenoid(IDs.PneumaticControlModule, PneumaticsModuleType.CTREPCM, IDs.WristBrakes_Forward, IDs.WristBrakes_Reverse);
+        BrakeActive = false;
+        TogglePneumaticBrake(BrakeActive);
+    }
 
     public void TogglePneumaticBrake(boolean active)
     {
         PneumaticBrake.set(active ? Value.kForward : Value.kReverse);
     }
 
-    public CommandBase TogglePneumaticBrake_Command()
+    public CommandBase TogglePneumaticBrake_Command(boolean active)
     {
-        active = !active;
         return runOnce(() -> TogglePneumaticBrake(active));
     }
 
@@ -41,8 +42,9 @@ public class WristSystem extends SubsystemBase
     {
         if (LaunchConstants.Log_WristSystem)
         {
-            SmartDashboard.putNumber("Intake Position", WristMotor.getSensorCollection().getIntegratedSensorPosition());
-            SmartDashboard.putNumber("Intake Velocity", WristMotor.getSensorCollection().getIntegratedSensorVelocity());
+            SmartDashboard.putBoolean("Brakes Active", BrakeActive);
+            SmartDashboard.putNumber("Wrist Pos.", WristMotor.getSensorCollection().getIntegratedSensorPosition());
+            SmartDashboard.putNumber("Wrist Vel.", WristMotor.getSensorCollection().getIntegratedSensorVelocity());
         }
     }
 }

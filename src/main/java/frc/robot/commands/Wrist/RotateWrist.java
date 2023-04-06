@@ -2,10 +2,7 @@ package frc.robot.commands.Wrist;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Utils.MathUtils;
-import frc.robot.constants.WristConstants;
 import frc.robot.subsystems.WristSystem;
 
 public class RotateWrist extends CommandBase
@@ -34,7 +31,7 @@ public class RotateWrist extends CommandBase
             return;
         }
 
-        //WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, Velocity);
+        WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, Velocity);
     }
 
     @Override

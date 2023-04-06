@@ -11,11 +11,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.GeneralConstants;
+import frc.robot.constants.IDs;
 import frc.robot.constants.LaunchConstants;
 
-/*
-Handles all things related to drive trains
-*/
 public class TankDriveSystem extends SubsystemBase 
 {
     public final WPI_VictorSPX LeftFront_Motor;
@@ -31,22 +29,22 @@ public class TankDriveSystem extends SubsystemBase
 
     public final DifferentialDrive Drive;
 
-    public TankDriveSystem(int leftFrontChannel, int leftBackChannel, int rightFrontChannel, int rightBackChannel, int leftEncoder, int rightEncoder) 
+    public TankDriveSystem()
     {
-        LeftFront_Motor = new WPI_VictorSPX(leftFrontChannel);
-        LeftBack_Motor = new WPI_VictorSPX(leftBackChannel);
-        RightFront_Motor = new WPI_VictorSPX(rightFrontChannel);
-        RightBack_Motor = new WPI_VictorSPX(rightBackChannel);
+        LeftFront_Motor = new WPI_VictorSPX(IDs.DriveMotor_LeftFront);
+        LeftBack_Motor = new WPI_VictorSPX(IDs.DriveMotor_LeftBack);
+        RightFront_Motor = new WPI_VictorSPX(IDs.DriveMotor_RightFront);
+        RightBack_Motor = new WPI_VictorSPX(IDs.DriveMotor_RightBack);
 
         LeftMotorController = new MotorControllerGroup(LeftFront_Motor, LeftBack_Motor);
         RightMotorController = new MotorControllerGroup(RightFront_Motor, RightBack_Motor);
 
         Drive = new DifferentialDrive(LeftMotorController, RightMotorController);
 
-        LeftEncoder = new DutyCycleEncoder(leftEncoder);
+        LeftEncoder = new DutyCycleEncoder(IDs.DriveEncoder_Left);
         LeftEncoder.setDistancePerRotation(GeneralConstants.kDriveEncoderToFeetConversionFactor);
 
-        RightEncoder = new DutyCycleEncoder(rightEncoder);
+        RightEncoder = new DutyCycleEncoder(IDs.DriveEncoder_Right);
         RightEncoder.setDistancePerRotation(GeneralConstants.kDriveEncoderToFeetConversionFactor);
     }
 
@@ -65,19 +63,22 @@ public class TankDriveSystem extends SubsystemBase
             else
             {
                 double rawThrottle = joystick.getThrottle();
-                SmartDashboard.putString("Throttle", "" + rawThrottle);
                 double throttle = Math.abs((rawThrottle - 1) / 2);
                 ArcadeDrive(joystick.getRawAxis(2) * throttle, joystick.getRawAxis(1) * throttle);
+
+                if (LaunchConstants.Log_DriveTrain)
+                {
+                    SmartDashboard.putNumber("Throttle", throttle);
+                    SmartDashboard.putNumber("Raw Throttle", rawThrottle);
+                }
             }
 
-            SmartDashboard.putString("Left Frequency", "" + LeftEncoder.getAbsolutePosition());
-            SmartDashboard.putString("Right Frequency", "" + RightEncoder.getDistance());
+            if (LaunchConstants.Log_DriveTrain)
+            {
+                SmartDashboard.putNumber("Enc. Freq. L", LeftEncoder.getDistance());
+                SmartDashboard.putNumber("Enc. Freq. R", RightEncoder.getDistance());
+            }
         });
-    }
-
-    public double EncoderToFeet(double encoderInput)
-    {
-        return encoderInput / 1000;
     }
 
     public void StopDrive() 
@@ -87,11 +88,17 @@ public class TankDriveSystem extends SubsystemBase
 
     public void TankDrive(double leftSpeed, double rightSpeed) 
     {
-        Drive.tankDrive(leftSpeed, rightSpeed);
+        if (!LaunchConstants.Safety_RestrictDriveTrain)
+        {
+            Drive.tankDrive(leftSpeed, rightSpeed);
+        }
     }
 
     public void ArcadeDrive(double speed, double rotation) 
     {
-        Drive.arcadeDrive(speed, rotation);
+        if (!LaunchConstants.Safety_RestrictDriveTrain)
+        {
+            Drive.arcadeDrive(speed, rotation);
+        }
     }
 }

@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.LaunchConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,9 +20,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot
 {
-    private Command m_autonomousCommand;
+    private Command Autonomous;
 
-    private RobotContainer m_robotContainer;
+    private RobotContainer RobotContainer;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -34,7 +35,7 @@ public class Robot extends TimedRobot
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our
         // autonomous chooser on the dashboard.
-        m_robotContainer = new RobotContainer();
+        RobotContainer = new RobotContainer();
     }
 
     /**
@@ -64,7 +65,7 @@ public class Robot extends TimedRobot
     @Override
     public void disabledInit()
     {
-        m_robotContainer.WristSystem.TogglePneumaticBrake(false);
+        RobotContainer.WristSystem.TogglePneumaticBrake(false);
     }
 
     @Override
@@ -77,12 +78,12 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousInit() 
     {
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        Autonomous = RobotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
-        if (m_autonomousCommand != null)
+        if (Autonomous != null)
         {
-            m_autonomousCommand.schedule();
+            Autonomous.schedule();
         }
     }
 
@@ -97,12 +98,15 @@ public class Robot extends TimedRobot
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        if (m_autonomousCommand != null) 
+        if (Autonomous != null) 
         {
-            m_autonomousCommand.cancel();
+            Autonomous.cancel();
         }
 
-        // m_robotContainer.MPUSystem.RecalibrateMPU.set(true);
+        if (LaunchConstants.MPU)
+        {
+            RobotContainer.GyroscopeSystem.ResetGyro();
+        }
     }
 
     /** This function is called periodically during operator control. */

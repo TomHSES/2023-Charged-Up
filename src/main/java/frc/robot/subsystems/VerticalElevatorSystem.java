@@ -1,21 +1,18 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
+import frc.robot.constants.IDs;
 import frc.robot.constants.LaunchConstants;
 
 public class VerticalElevatorSystem extends SubsystemBase
 {
-    public final TalonFX ElevatorMotor;
+    public TalonFX ElevatorMotor;
 
     public DigitalInput ElevatorLimitSwitch;
 
@@ -23,11 +20,11 @@ public class VerticalElevatorSystem extends SubsystemBase
 
     public double ElevatorRefEncoderPosition;
 
-    public VerticalElevatorSystem(int canID)
+    public VerticalElevatorSystem()
     {
-        ElevatorMotor = new TalonFX(canID);
+        ElevatorMotor = new TalonFX(IDs.ElevatorMotor_Vertical);
         ElevatorController = new PIDController(ElevatorConstants.kVerticalElevatorControllerP, ElevatorConstants.kVerticalElevatorControllerI, ElevatorConstants.kVerticalElevatorControllerD);
-        ElevatorLimitSwitch = new DigitalInput(0);
+        ElevatorLimitSwitch = new DigitalInput(IDs.LimitSwitch_Elevator);
     }
 
     public double GetEncoderPosition()
@@ -40,8 +37,8 @@ public class VerticalElevatorSystem extends SubsystemBase
     {
         if (LaunchConstants.Log_ElevatorSystems)
         {
-            SmartDashboard.putNumber("VE Inertia", ElevatorConstants.VerticalMotorInertia);
-            SmartDashboard.putNumber("VE Encoder Position", GetEncoderPosition());
+            SmartDashboard.putNumber("V.E. Inertia", ElevatorConstants.VerticalMotorInertia);
+            SmartDashboard.putNumber("V.E. Enc. Pos.", GetEncoderPosition());
         }
     }
 }

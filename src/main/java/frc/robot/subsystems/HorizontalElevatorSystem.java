@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.Elevator.IdleHorizontalElevatorSystem;
 import frc.robot.constants.ElevatorConstants;
+import frc.robot.constants.IDs;
 import frc.robot.constants.LaunchConstants;
 
 public class HorizontalElevatorSystem extends SubsystemBase
@@ -22,9 +23,9 @@ public class HorizontalElevatorSystem extends SubsystemBase
 
     public double ElevatorRefEncoderPosition;
 
-    public HorizontalElevatorSystem(int canID)
+    public HorizontalElevatorSystem()
     {
-        ElevatorMotor = new CANSparkMax(canID, MotorType.kBrushless);
+        ElevatorMotor = new CANSparkMax(IDs.ElevatorMotor_Horizontal, MotorType.kBrushless);
         ElevatorMotor.restoreFactoryDefaults();
 
         Encoder = ElevatorMotor.getEncoder();
