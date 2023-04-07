@@ -20,62 +20,30 @@ public class Auto_Drive extends CommandBase
 
     public double MaxSpeed;
 
-    // In terms of feet
-    public double SetpointTolerance;
-
-    public PIDController DriveController;
-
-    public boolean HasInit = false;
-
-    public double CurrentEncoderValue;
-
-    public double OldEncoderValue;
-
-    public double DriveGain;
-
-    public Auto_Drive(TankDriveSystem tankDriveSystem, double desiredDistance, double maxSpeed, double setpointTolerance)
+    public Auto_Drive(TankDriveSystem tankDriveSystem, double desiredDistance, double maxSpeed)
     {
         TankDriveSystem = tankDriveSystem;
         DesiredDistance_Feet = desiredDistance;
         DesiredDistance = DesiredDistance_Feet / GeneralConstants.kDriveEncoderToFeetConversionFactor;
         MaxSpeed = maxSpeed;
-        SetpointTolerance = setpointTolerance;
-        DriveController.setSetpoint(DesiredDistance);
-        DriveController.setTolerance(SetpointTolerance);
-        DriveController.setPID(AutonomousConstants.kDrivePIDPercentP, AutonomousConstants.kDrivePIDPercentI, AutonomousConstants.kDrivePIDPercentD);
         addRequirements(tankDriveSystem);
     }
 
     @Override
     public void execute()
     {
-        OldEncoderValue = CurrentEncoderValue;
-        CurrentEncoderValue = TankDriveSystem.LeftEncoder.getDistance();
-        if (MathUtils.Sign(OldEncoderValue - DesiredDistance) != MathUtils.Sign(CurrentEncoderValue - DesiredDistance))
-        {
-            DriveController.reset();
-        }
-
-        DriveGain = MathUtil.clamp(DriveController.calculate(CurrentEncoderValue), -MaxSpeed, MaxSpeed);
-        if (DriveController.atSetpoint())
-        {
-            TankDriveSystem.ArcadeDrive(0, 0);
-        }
-        else
-        {
-            TankDriveSystem.ArcadeDrive(0, DriveGain);
-        }
+        TankDriveSystem.ArcadeDrive(0, MaxSpeed);
     }
 
     @Override
     public void end(boolean interrupted)
     {
-        TankDriveSystem.ArcadeDrive(0, 0);
+        TankDriveSystem.StopDrive();
     }
 
     @Override
     public boolean isFinished()
     {
-        return HasInit && DriveController.atSetpoint() && DriveGain < SetpointTolerance * AutonomousConstants.kDrivePIDPercentP;
+        return TankDriveSystem.LeftEncoder.get() >= DesiredDistance_Feet;
     }
 }

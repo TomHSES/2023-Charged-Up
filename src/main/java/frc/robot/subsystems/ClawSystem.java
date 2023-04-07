@@ -25,7 +25,7 @@ public class ClawSystem extends SubsystemBase
         LeftMotor = new CANSparkMax(IDs.ClawMotor_Left, MotorType.kBrushless);
         RightMotor = new CANSparkMax(IDs.ClawMotor_Right, MotorType.kBrushless);
         Piston = new DoubleSolenoid(IDs.PneumaticControlModule, PneumaticsModuleType.CTREPCM, IDs.ClawPistons_Forward, IDs.ClawPistons_Reverse);
-        DisablePistons();
+        EnablePistons();
     }
 
     public CommandBase SpinMotors(double motorSpeed)

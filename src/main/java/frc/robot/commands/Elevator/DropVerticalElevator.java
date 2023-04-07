@@ -3,15 +3,16 @@ package frc.robot.commands.Elevator;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.VerticalElevatorSystem;
 
-public class ManualElevatorSystem extends CommandBase
+public class DropVerticalElevator extends CommandBase
 {
     public VerticalElevatorSystem ElevatorSystem;
 
     public Double Speed;
 
-    public ManualElevatorSystem(VerticalElevatorSystem elevatorSystem, double speed)
+    public DropVerticalElevator(VerticalElevatorSystem elevatorSystem, double speed)
     {
         ElevatorSystem = elevatorSystem;
         Speed = speed;
@@ -28,5 +29,11 @@ public class ManualElevatorSystem extends CommandBase
     public void end(boolean interrupted)
     {
         ElevatorSystem.ElevatorMotor.set(TalonFXControlMode.PercentOutput, 0.0);
+    }
+
+    @Override
+    public boolean isFinished()
+    {
+        return ElevatorSystem.GetEncoderPosition() <= ElevatorConstants.kVerticalElevatorThreshold * 3;
     }
 }

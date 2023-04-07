@@ -23,6 +23,8 @@ public class HorizontalElevatorSystem extends SubsystemBase
 
     public double ElevatorRefEncoderPosition;
 
+    public double IdleDirection;
+
     public HorizontalElevatorSystem()
     {
         ElevatorMotor = new CANSparkMax(IDs.ElevatorMotor_Horizontal, MotorType.kBrushless);
@@ -40,6 +42,9 @@ public class HorizontalElevatorSystem extends SubsystemBase
         ElevatorMotor.burnFlash();
 
         Encoder.setPosition(0);
+
+        IdleDirection = -1;
+
         setDefaultCommand(new IdleHorizontalElevatorSystem(this));
     }
 

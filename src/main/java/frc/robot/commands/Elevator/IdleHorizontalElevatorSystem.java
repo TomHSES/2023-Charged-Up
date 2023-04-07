@@ -7,21 +7,23 @@ import frc.robot.subsystems.HorizontalElevatorSystem;
 
 public class IdleHorizontalElevatorSystem extends CommandBase
 {
-    public HorizontalElevatorSystem ElevatorSystem;
+    public HorizontalElevatorSystem HorizontalElevatorSystem;
 
     public Timer ElevatorTimer;
 
     public IdleHorizontalElevatorSystem(HorizontalElevatorSystem elevatorSystem)
     {
-        ElevatorSystem = elevatorSystem;
+        HorizontalElevatorSystem = elevatorSystem;
         ElevatorTimer = new Timer();
-        addRequirements(ElevatorSystem);
+        addRequirements(HorizontalElevatorSystem);
     }
     
     @Override
     public void execute()
     {
-        if (ElevatorSystem.Encoder.getPosition() < ElevatorConstants.InHorizontalThreshold)
+        double encoderPosition = HorizontalElevatorSystem.Encoder.getPosition();
+        if (HorizontalElevatorSystem.IdleDirection < 0.0 && encoderPosition < ElevatorConstants.InHorizontalThreshold
+        || HorizontalElevatorSystem.IdleDirection > 0.0 && encoderPosition > ElevatorConstants.HorizontalElevatorBottomPosition - ElevatorConstants.InHorizontalThreshold)
         {
             ElevatorTimer.start();
         }
@@ -31,13 +33,13 @@ public class IdleHorizontalElevatorSystem extends CommandBase
         }
 
         double inertiaSpeed = ElevatorConstants.HorizontalMotorInertia;
-        inertiaSpeed += ElevatorTimer.hasElapsed(2) ? 0.01 : 0.0;
-        ElevatorSystem.ElevatorMotor.set(inertiaSpeed);
+        inertiaSpeed *= ElevatorTimer.hasElapsed(2) ? 1.33 : 1.0;
+        HorizontalElevatorSystem.ElevatorMotor.set(inertiaSpeed * HorizontalElevatorSystem.IdleDirection);
     }
 
     @Override
     public void end(boolean interrupted) 
     {
-        ElevatorSystem.ElevatorMotor.set(0);
+        HorizontalElevatorSystem.ElevatorMotor.set(0);
     }
 }

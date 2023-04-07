@@ -3,13 +3,13 @@ package frc.robot.commands.Elevator;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.HorizontalElevatorSystem;
 
-public class MoveHorizontalElevatorSystem extends CommandBase
+public class ManualHElevatorSystem extends CommandBase
 {
     public HorizontalElevatorSystem ElevatorSystem;
 
     public double Velocity;
 
-    public MoveHorizontalElevatorSystem(HorizontalElevatorSystem elevatorSystem, double velocity)
+    public ManualHElevatorSystem(HorizontalElevatorSystem elevatorSystem, double velocity)
     {
         ElevatorSystem = elevatorSystem;
         Velocity = velocity;

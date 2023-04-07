@@ -28,9 +28,11 @@ public final class ElevatorConstants
     // Calibrated as a part of CalibrateVerticalElevatorSystem
     public static double VerticalMotorInertia = 0.33;
 
-    public static double InHorizontalThreshold = 0.25;
+    public static double InHorizontalThreshold = 0.2;
 
-    public static double HorizontalMotorInertia = -0.03;
+    public static double HorizontalMotorInertia = 0.03;
+
+    public static double kVerticalElevatorThreshold = 500;
 
     public static double VerticalElevatorTopPosition = 100000;
 

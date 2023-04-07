@@ -5,8 +5,9 @@
 package frc.robot;
 
 import frc.robot.commands.Elevator.CalibrateVerticalElevatorSystem;
-import frc.robot.commands.Elevator.ManualElevatorSystem;
-import frc.robot.commands.Elevator.MoveHorizontalElevatorSystem;
+import frc.robot.commands.Elevator.ManualVElevatorSystem;
+import frc.robot.commands.Elevator.ToggleHorizontalElevator;
+import frc.robot.commands.Elevator.ManualHElevatorSystem;
 import frc.robot.commands.Wrist.RotateWrist;
 import frc.robot.commands.Wrist.RotateWrist_Uncontrolled;
 import frc.robot.commands.Scoring;
@@ -133,11 +134,11 @@ public class RobotContainer
             // Joystick 0: Driver-preferred controls
             // Joystick 1: Manual controls in case the controls assigned to Joystick 0 breaks
 
-            Joystick.button(9).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, -0.15));
-            Joystick.button(10).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, 0.10));
+            Joystick.button(9).whileTrue(new ManualHElevatorSystem(HorizontalElevator, -0.15));
+            Joystick.button(10).whileTrue(new ManualHElevatorSystem(HorizontalElevator, 0.10));
 
-            Joystick.button(7).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.66));
-            Joystick.button(8).whileTrue(new ManualElevatorSystem(VerticalElevator, -0.1));
+            Joystick.button(7).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.66));
+            Joystick.button(8).whileTrue(new ManualVElevatorSystem(VerticalElevator, -0.1));
 
             Joystick.button(12).onTrue(Scoring.ToggleScoringRoutine(true));
 
@@ -152,23 +153,24 @@ public class RobotContainer
             AltJoystick.button(7).onTrue(ClawSystem.DisablePistons_Command());
             AltJoystick.button(8).onTrue(ClawSystem.EnablePistons_Command());
 
-            boolean testing = true;
+            AltJoystick.button(9).whileTrue(new ToggleHorizontalElevator(HorizontalElevator, -1));
+            AltJoystick.button(10).whileTrue(new ToggleHorizontalElevator(HorizontalElevator, -1));
 
-            if (testing)
+            if (true) // Testing
             {
-                AltJoystick.button(9).onTrue(new RotateWrist_Uncontrolled(WristSystem, -0.8));
-                AltJoystick.button(10).onTrue(new RotateWrist_Uncontrolled(WristSystem, 0.8));
+                AltJoystick.button(11).onTrue(new RotateWrist_Uncontrolled(WristSystem, -0.8));
+                AltJoystick.button(12).onTrue(new RotateWrist_Uncontrolled(WristSystem, 0.8));
 
-                AltJoystick.button(3).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.45));
-                AltJoystick.button(4).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.4));
+                AltJoystick.button(3).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.45));
+                AltJoystick.button(4).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.4));
 
-                AltJoystick.button(5).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.35));
-                AltJoystick.button(6).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.3));
+                AltJoystick.button(5).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.35));
+                AltJoystick.button(6).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.3));
             }
             else
             {
-                AltJoystick.button(9).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.66));
-                AltJoystick.button(10).whileTrue(new ManualElevatorSystem(VerticalElevator, -0.1));
+                AltJoystick.button(11).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.66));
+                AltJoystick.button(12).whileTrue(new ManualVElevatorSystem(VerticalElevator, -0.1));
 
                 AltJoystick.button(4).onTrue(new RotateWrist_Uncontrolled(WristSystem, -0.8));
                 AltJoystick.button(6).onTrue(new RotateWrist_Uncontrolled(WristSystem, 0.8));
@@ -176,11 +178,11 @@ public class RobotContainer
         } 
         else 
         {
-            Joystick.button(9).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, -0.15));
-            Joystick.button(10).whileTrue(new MoveHorizontalElevatorSystem(HorizontalElevator, 0.10));
+            Joystick.button(9).whileTrue(new ManualHElevatorSystem(HorizontalElevator, -0.15));
+            Joystick.button(10).whileTrue(new ManualHElevatorSystem(HorizontalElevator, 0.10));
 
-            Joystick.button(7).whileTrue(new ManualElevatorSystem(VerticalElevator, 0.66));
-            Joystick.button(8).whileTrue(new ManualElevatorSystem(VerticalElevator, -0.1));
+            Joystick.button(7).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.66));
+            Joystick.button(8).whileTrue(new ManualVElevatorSystem(VerticalElevator, -0.1));
 
             Joystick.button(12).onTrue(Scoring.ToggleScoringRoutine(true));
 

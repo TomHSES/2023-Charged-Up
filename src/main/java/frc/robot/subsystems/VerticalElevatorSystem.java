@@ -32,6 +32,11 @@ public class VerticalElevatorSystem extends SubsystemBase
         setDefaultCommand(new IdleVerticalElevatorSystem(this));
     }
 
+    public double GetEncoderPosition()
+    {
+        return ElevatorMotor.getSensorCollection().getIntegratedSensorPosition();
+    }
+
     public CommandBase RunMotor(double velocity)
     {
         return runEnd(() ->
@@ -41,11 +46,6 @@ public class VerticalElevatorSystem extends SubsystemBase
         {
             ElevatorMotor.set(TalonFXControlMode.PercentOutput, 0);
         });
-    }
-
-    public double GetEncoderPosition()
-    {
-        return ElevatorMotor.getSensorCollection().getIntegratedSensorPosition();
     }
 
     @Override
