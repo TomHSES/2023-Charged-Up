@@ -7,7 +7,7 @@ import frc.robot.commands.Elevator.DropVerticalElevator;
 import frc.robot.commands.Elevator.LiftVerticalElevator;
 import frc.robot.commands.Elevator.ManualHElevatorSystem;
 import frc.robot.commands.Elevator.ToggleHorizontalElevator;
-import frc.robot.commands.Wrist.RotateWrist;
+import frc.robot.commands.Wrist.ManualWristSystem_Timed;
 import frc.robot.constants.AutonomousConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.WristConstants;
@@ -32,22 +32,23 @@ public class AutonomousRoutine extends CommandBase
             case None:
                 return new Auto_Initialisation(RobotContainer.GyroscopeSystem, RobotContainer.DriveSystem);
 
+            case OnlyDrive:
+                return new Auto_TimeDrive(RobotContainer.DriveSystem, -0.66, 2);
+
             case Default:
             {
                 return Commands.sequence(new Auto_Initialisation(RobotContainer.GyroscopeSystem, RobotContainer.DriveSystem),
-                new LiftVerticalElevator(RobotContainer.VerticalElevator, ElevatorConstants.VertElevConePos, 0.33),
-                new RotateWrist(null, -0.8, 0.5), // Min > Max = Wrist falls outwards
-                new ToggleHorizontalElevator(RobotContainer.HorizontalElevator, 1), // + value = Elevator out
+                new ManualWristSystem_Timed(RobotContainer.WristSystem, 0.8, -0.2, 0.75),
+                new LiftVerticalElevator(RobotContainer.VerticalElevator, ElevatorConstants.VertElevConePos),
+                new ToggleHorizontalElevator(RobotContainer.HorizontalElevator, 2), // + value = Elevator out
                 new Auto_Sleep(1),
                 RobotContainer.ClawSystem.DisablePistons_Command(),
                 new Auto_Sleep(1),
-                new DropVerticalElevator(RobotContainer.VerticalElevator, -0.1),
+                new DropVerticalElevator(RobotContainer.VerticalElevator),
                 new Auto_Sleep(1),
-                new Auto_Rotate(RobotContainer.GyroscopeSystem, RobotContainer.DriveSystem, 180, 3),
                 new Auto_Sleep(1),
-                new Auto_Drive(RobotContainer.DriveSystem, 10, 0.5),
-                new Auto_Rotate(RobotContainer.GyroscopeSystem, RobotContainer.DriveSystem, 180, 3),
-                new Auto_Drive(RobotContainer.DriveSystem, 3, 0.4));
+                new Auto_TimeDrive(RobotContainer.DriveSystem, 0.66, 3),
+                new Auto_TimeDrive(RobotContainer.DriveSystem, -0.66, 1));
             }
 
             /*case ScoreAndBalance:

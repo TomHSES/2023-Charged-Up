@@ -7,12 +7,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.Elevator.IdleVerticalElevatorSystem;
-import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.IDs;
 import frc.robot.constants.LaunchConstants;
 
-public class VerticalElevatorSystem extends SubsystemBase
+public class WristSystemTwo extends SubsystemBase 
 {
     public TalonFX ElevatorMotor;
 
@@ -20,17 +18,13 @@ public class VerticalElevatorSystem extends SubsystemBase
 
     public double ElevatorRefEncoderPosition;
 
-    public VerticalElevatorSystem()
+    public WristSystemTwo()
     {
-        ElevatorMotor = new TalonFX(IDs.ElevatorMotor_Vertical);
+        ElevatorMotor = new TalonFX(IDs.WristMotor);
         ElevatorMotor.configFactoryDefault(50);
-        ElevatorController = new PIDController(ElevatorConstants.kVerticalElevatorControllerP, ElevatorConstants.kVerticalElevatorControllerI, ElevatorConstants.kVerticalElevatorControllerD);
-        //ElevatorLimitSwitch = new DigitalInput(IDs.LimitSwitch_Elevator);
-        ElevatorMotor.getSensorCollection().setIntegratedSensorPosition(0, 30);
-        setDefaultCommand(new IdleVerticalElevatorSystem(this));
     }
 
-    public double GetEncoderPosition()
+    public double GetPosition()
     {
         return ElevatorMotor.getSensorCollection().getIntegratedSensorPosition();
     }
@@ -51,9 +45,7 @@ public class VerticalElevatorSystem extends SubsystemBase
     {
         if (LaunchConstants.Log_ElevatorSystems)
         {
-            SmartDashboard.putNumber("V.E. Inertia", ElevatorConstants.VerticalMotorInertia);
-            SmartDashboard.putNumber("V.E. Enc. Pos.", GetEncoderPosition());
-            //SmartDashboard.putBoolean("V.E. Switch", ElevatorLimitSwitch.get());
+            SmartDashboard.putNumber("Wrist. Enc. Pos.", GetPosition());
         }
     }
 }

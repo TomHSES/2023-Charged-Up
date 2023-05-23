@@ -4,7 +4,7 @@ import frc.robot.datatypes.AutonomousRoutineMode;
 
 public final class AutonomousConstants 
 {
-    public static AutonomousRoutineMode AutonomousRoutine = AutonomousRoutineMode.None;
+    public static AutonomousRoutineMode AutonomousRoutine = AutonomousRoutineMode.OnlyDrive;
     
     public static double kOnChargeStationAngle = 11.0;
 

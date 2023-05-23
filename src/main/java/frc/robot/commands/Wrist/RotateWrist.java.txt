@@ -4,11 +4,11 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.WristConstants;
-import frc.robot.subsystems.WristSystem;
+import frc.robot.subsystems.WristSystemTwo;
 
 public class RotateWrist extends CommandBase
 {
-    public WristSystem WristSystem;
+    public WristSystemTwo WristSystem;
 
     public double MinVelocity;
 
@@ -18,7 +18,7 @@ public class RotateWrist extends CommandBase
 
     public double AltWristExtendedPosition;
 
-    public RotateWrist(WristSystem wristSystem, double minVelocity, double maxVelocity)
+    public RotateWrist(WristSystemTwo wristSystem, double minVelocity, double maxVelocity)
     {
         WristSystem = wristSystem;
         MinVelocity = minVelocity;
@@ -32,25 +32,25 @@ public class RotateWrist extends CommandBase
     // Max-Speed: Accounts for gravity while the wrist is extended
     public double CalculateWristSpeed(double minSpeed, double maxSpeed)
     {
-        double currentWristPosition = WristSystem.GetFalconPosition();
+        double currentWristPosition = WristSystem.GetPosition();
         return ((currentWristPosition * (maxSpeed - minSpeed)) / WristConstants.kWristExtendedPosition) + minSpeed;
     }
 
     public double CalculateWristSpeed_Alt(double minSpeed, double maxSpeed)
     {
-        double currentWristPosition = WristSystem.GetFalconPosition();
+        double currentWristPosition = WristSystem.GetPosition();
         return ((Math.pow(currentWristPosition, AltSpeedExponent) * (maxSpeed - minSpeed)) / AltWristExtendedPosition) + minSpeed;
     }
 
     @Override
     public void execute()
     {
-        WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, CalculateWristSpeed(MinVelocity, MaxVelocity));
+        WristSystem.ElevatorMotor.set(TalonFXControlMode.PercentOutput, CalculateWristSpeed(MinVelocity, MaxVelocity));
     }
 
     @Override
     public void end(boolean interrupted)
     {
-        WristSystem.WristMotor.set(TalonFXControlMode.PercentOutput, 0);
+        WristSystem.ElevatorMotor.set(TalonFXControlMode.PercentOutput, 0);
     }
 }

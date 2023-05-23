@@ -10,19 +10,16 @@ public class DropVerticalElevator extends CommandBase
 {
     public VerticalElevatorSystem ElevatorSystem;
 
-    public Double Speed;
-
-    public DropVerticalElevator(VerticalElevatorSystem elevatorSystem, double speed)
+    public DropVerticalElevator(VerticalElevatorSystem elevatorSystem)
     {
         ElevatorSystem = elevatorSystem;
-        Speed = speed;
         addRequirements(ElevatorSystem);
     }
     
     @Override
     public void execute()
     {
-        ElevatorSystem.ElevatorMotor.set(TalonFXControlMode.PercentOutput, Speed);
+        ElevatorSystem.ElevatorMotor.set(TalonFXControlMode.PercentOutput, -1);
     }
 
     @Override
@@ -34,6 +31,6 @@ public class DropVerticalElevator extends CommandBase
     @Override
     public boolean isFinished()
     {
-        return ElevatorSystem.GetEncoderPosition() <= ElevatorConstants.kVerticalElevatorThreshold * 3;
+        return ElevatorSystem.GetEncoderPosition() <= 5000;
     }
 }

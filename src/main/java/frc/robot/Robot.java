@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.LaunchConstants;
@@ -66,11 +67,13 @@ public class Robot extends TimedRobot
     public void disabledInit()
     {
         RobotContainer.VerticalElevator.ElevatorMotor.getSensorCollection().setIntegratedSensorPosition(0, 30);
-        RobotContainer.WristSystem.DisableBrakes();
     }
 
     @Override
-    public void disabledPeriodic() { }
+    public void disabledPeriodic()
+    {
+        double val = SmartDashboard.getNumber("Test Val", kDefaultPeriod);
+    }
 
     /**
      * This autonomous runs the autonomous command selected by your
@@ -103,8 +106,6 @@ public class Robot extends TimedRobot
         {
             Autonomous.cancel();
         }
-
-        RobotContainer.WristSystem.EnableBrakes();
 
         if (LaunchConstants.MPU)
         {

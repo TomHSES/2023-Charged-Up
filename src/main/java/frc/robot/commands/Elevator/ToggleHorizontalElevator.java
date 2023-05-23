@@ -32,20 +32,20 @@ public class ToggleHorizontalElevator extends CommandBase
             return;
         }
 
-        double elapsedSeconds = (Time.GetMsClock() - BeginTime) / 1000;
+        double elapsedSeconds = (Time.GetMsClock() - BeginTime) / 1500;
         double speed = Math.abs(ElevatorConstants.HorizontalMotorInertia);
         if (elapsedSeconds < 1)
         {
-            speed *= Math.cos(elapsedSeconds * Math.PI / 2) + 1;
+            speed *= Math.cos(elapsedSeconds * Math.PI / 2) * 3 + 1.5;
         }
-
+        
+        ElevatorSystem.IdleDirection = Direction;
         ElevatorSystem.ElevatorMotor.set(speed * Direction);
     }
 
     @Override
     public void end(boolean interrupted)
     {
-        ElevatorSystem.IdleDirection = Direction;
         ElevatorSystem.ElevatorMotor.set(0.0);
     }
 

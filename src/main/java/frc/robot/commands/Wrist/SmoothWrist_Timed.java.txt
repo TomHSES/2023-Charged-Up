@@ -1,0 +1,42 @@
+package frc.robot.commands.Wrist;
+
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.WristSystemTwo;
+
+public class SmoothWrist_Timed extends CommandBase
+{
+    public WristSystemTwo WristSystem;
+
+    public double MaxSpeed;
+
+    public double MinSpeed;
+
+    public double SpeedDifferential;
+
+    public double BeginTime;
+
+    public boolean HasInit;
+
+    public SmoothWrist_Timed(WristSystemTwo wristSystem, double maxSpeed, double minSpeed)
+    {
+        HasInit = false;
+        WristSystem = wristSystem;
+        MaxSpeed = maxSpeed;
+        MinSpeed = minSpeed;
+        SpeedDifferential = MaxSpeed - MinSpeed;
+        addRequirements(wristSystem);
+    }
+
+    @Override
+    public void execute()
+    {
+        if (!HasInit)
+        {
+            HasInit = true;
+            return;
+        }
+
+        
+    }
+}

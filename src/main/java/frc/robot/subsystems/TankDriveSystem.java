@@ -43,9 +43,11 @@ public class TankDriveSystem extends SubsystemBase
 
         LeftEncoder = new DutyCycleEncoder(IDs.DriveEncoder_Left);
         LeftEncoder.setDistancePerRotation(GeneralConstants.kDriveEncoderToFeetConversionFactor);
+        LeftEncoder.reset();
 
         RightEncoder = new DutyCycleEncoder(IDs.DriveEncoder_Right);
         RightEncoder.setDistancePerRotation(GeneralConstants.kDriveEncoderToFeetConversionFactor);
+        RightEncoder.reset();
     }
 
     @Override
@@ -98,7 +100,7 @@ public class TankDriveSystem extends SubsystemBase
         }
     }
 
-    public void ArcadeDrive(double rotation, double speed) 
+    public void ArcadeDrive(double speed, double rotation) 
     {
         if (!LaunchConstants.Safety_RestrictDriveTrain)
         {

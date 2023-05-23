@@ -32,7 +32,7 @@ public class ClawSystem extends SubsystemBase
     {
         return runEnd(() ->
         {
-            LeftMotor.set(motorSpeed);
+            LeftMotor.set(-motorSpeed);
             RightMotor.set(motorSpeed);
         }, () ->
         {

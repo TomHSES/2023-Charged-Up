@@ -4,17 +4,20 @@
 
 package frc.robot;
 
-import frc.robot.commands.Elevator.CalibrateVerticalElevatorSystem;
+import frc.robot.commands.Elevator.LiftVerticalElevator;
 import frc.robot.commands.Elevator.ManualVElevatorSystem;
 import frc.robot.commands.Elevator.ToggleHorizontalElevator;
+import frc.robot.commands.Wrist.ManualWristSystem;
+import frc.robot.commands.Wrist.ManualWristSystem_Timed;
 import frc.robot.commands.Elevator.ManualHElevatorSystem;
-import frc.robot.commands.Wrist.RotateWrist;
-import frc.robot.commands.Wrist.RotateWrist_Uncontrolled;
 import frc.robot.commands.Scoring;
+import frc.robot.commands.Autonomous.AutonomousRoutine;
+import frc.robot.commands.Autonomous.Auto_TimeDrive;
+import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.IDs;
 import frc.robot.constants.LaunchConstants;
 import frc.robot.subsystems.TankDriveSystem;
-import frc.robot.subsystems.WristSystem;
+import frc.robot.subsystems.WristSystemTwo;
 import frc.robot.subsystems.ClawSystem;
 import frc.robot.subsystems.HorizontalElevatorSystem;
 import frc.robot.subsystems.GyroscopeSystem;
@@ -51,11 +54,13 @@ public class RobotContainer
 
     public HorizontalElevatorSystem HorizontalElevator;
 
-    public WristSystem WristSystem;
+    public WristSystemTwo WristSystem;
 
     public ClawSystem ClawSystem;
 
     public Scoring Scoring;
+
+    public AutonomousRoutine Auto;
 
     public RobotContainer() 
     {
@@ -67,19 +72,14 @@ public class RobotContainer
     public void InitialiseSystems() 
     {
         DriveSystem = new TankDriveSystem();
-        DriveSystem.LeftEncoder.reset();
-        DriveSystem.RightEncoder.reset();
         GyroscopeSystem = new GyroscopeSystem();
         GyroscopeSystem.CalibrateGyro(DriveSystem);
         ClawSystem = new ClawSystem();
         VerticalElevator = new VerticalElevatorSystem();
-        VerticalElevator.ElevatorMotor.getSensorCollection().setIntegratedSensorPosition(0, 30);
         HorizontalElevator = new HorizontalElevatorSystem();
-        HorizontalElevator.Encoder.setPosition(0);
-        WristSystem = new WristSystem();
-        WristSystem.WristMotor.getSensorCollection().setIntegratedSensorPosition(0, 30);
+        WristSystem = new WristSystemTwo();
         Scoring = new Scoring(this);
-
+        Auto = new AutonomousRoutine(this);
         if (LaunchConstants.Controller) 
         {
             Controller = new CommandXboxController(IDs.Port_Controller);
@@ -102,96 +102,21 @@ public class RobotContainer
 
     private void configureBindings()
     {
-        // Button 8: Handle aligning cones on node
-        // All driver should do is to intake game piece and drive to node
-        // Claw motors will only spin for shooting to upper nodes/platforms
+        //Joystick.button(2).onTrue(new ManualWristSystem_Timed(WristSystem, 0.8, -0.2, 0.75));
 
-        // Button 7: Handling scoring cubes on platform
+        Joystick.button(6).whileTrue(new ManualWristSystem(WristSystem, -0.33));
+        Joystick.button(4).whileTrue(new ManualWristSystem(WristSystem, 0.33));
 
-        // Button 12: Intaking from double substation
+        Joystick.button(7).whileTrue(new ManualVElevatorSystem(VerticalElevator, 1));
+        Joystick.button(8).whileTrue(new ManualVElevatorSystem(VerticalElevator, -1));
 
-        // Button 11: Open/close claw
+        Joystick.button(9).whileTrue(new ToggleHorizontalElevator(HorizontalElevator, 2));
+        Joystick.button(10).whileTrue(new ToggleHorizontalElevator(HorizontalElevator, -3));
 
-        // Button 6: Wrist down
+        Joystick.button(5).whileTrue(ClawSystem.SpinMotors(0.2));
+        Joystick.button(3).whileTrue(ClawSystem.SpinMotors(-0.15));
 
-        // Button 4: Wrist up
-
-        // Button 5: Rotate claw wheels
-
-
-        // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-        /*
-         * new Trigger(m_exampleSubsystem::exampleCondition)
-         * .onTrue(new ExampleCommand(m_exampleSubsystem));
-        */
-
-        if (LaunchConstants.Controller) 
-        {
-           // Controller.button(1).whileTrue(CalibrateElevatorSystem.ScheduleCalibration(VerticalElevator));
-        }
-        else if (LaunchConstants.CompetitionControls)
-        {
-            // Joystick 0: Driver-preferred controls
-            // Joystick 1: Manual controls in case the controls assigned to Joystick 0 breaks
-
-            Joystick.button(9).whileTrue(new ManualHElevatorSystem(HorizontalElevator, -0.15));
-            Joystick.button(10).whileTrue(new ManualHElevatorSystem(HorizontalElevator, 0.10));
-
-            Joystick.button(7).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.66));
-            Joystick.button(8).whileTrue(new ManualVElevatorSystem(VerticalElevator, -0.1));
-
-            Joystick.button(12).onTrue(Scoring.ToggleScoringRoutine(true));
-
-            Joystick.button(5).whileTrue(ClawSystem.SpinMotors(-0.5));
-            Joystick.button(11).onTrue(ClawSystem.TogglePistons_Command());
-
-            Joystick.button(6).whileTrue(new RotateWrist(WristSystem, -0.8, 0.5));
-            Joystick.button(4).whileTrue(new RotateWrist(WristSystem, -0.5, 0.8));
-
-            //-------------------------------------------------------------------------
-
-            AltJoystick.button(7).onTrue(ClawSystem.DisablePistons_Command());
-            AltJoystick.button(8).onTrue(ClawSystem.EnablePistons_Command());
-
-            AltJoystick.button(9).whileTrue(new ToggleHorizontalElevator(HorizontalElevator, -1));
-            AltJoystick.button(10).whileTrue(new ToggleHorizontalElevator(HorizontalElevator, -1));
-
-            if (true) // Testing
-            {
-                AltJoystick.button(11).onTrue(new RotateWrist_Uncontrolled(WristSystem, -0.8));
-                AltJoystick.button(12).onTrue(new RotateWrist_Uncontrolled(WristSystem, 0.8));
-
-                AltJoystick.button(3).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.45));
-                AltJoystick.button(4).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.4));
-
-                AltJoystick.button(5).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.35));
-                AltJoystick.button(6).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.3));
-            }
-            else
-            {
-                AltJoystick.button(11).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.66));
-                AltJoystick.button(12).whileTrue(new ManualVElevatorSystem(VerticalElevator, -0.1));
-
-                AltJoystick.button(4).onTrue(new RotateWrist_Uncontrolled(WristSystem, -0.8));
-                AltJoystick.button(6).onTrue(new RotateWrist_Uncontrolled(WristSystem, 0.8));
-            }
-        } 
-        else 
-        {
-            Joystick.button(9).whileTrue(new ManualHElevatorSystem(HorizontalElevator, -0.15));
-            Joystick.button(10).whileTrue(new ManualHElevatorSystem(HorizontalElevator, 0.10));
-
-            Joystick.button(7).whileTrue(new ManualVElevatorSystem(VerticalElevator, 0.66));
-            Joystick.button(8).whileTrue(new ManualVElevatorSystem(VerticalElevator, -0.1));
-
-            Joystick.button(12).onTrue(Scoring.ToggleScoringRoutine(true));
-
-            Joystick.button(5).whileTrue(ClawSystem.SpinMotors(-0.5));
-            Joystick.button(11).onTrue(ClawSystem.TogglePistons_Command());
-
-            Joystick.button(6).whileTrue(new RotateWrist(WristSystem, -0.8, 0.5));
-            Joystick.button(4).whileTrue(new RotateWrist(WristSystem, -0.5, 0.8));
-        }
+        Joystick.button(11).onTrue(ClawSystem.TogglePistons_Command());
     }
 
     public void Finalise() 
@@ -201,6 +126,6 @@ public class RobotContainer
 
     public Command getAutonomousCommand() 
     {
-        return null; // Autos.exampleAuto(m_exampleSubsystem);
+        return new Auto_TimeDrive(DriveSystem, -0.66, 2);
     }
 }

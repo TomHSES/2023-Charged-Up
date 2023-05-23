@@ -26,11 +26,11 @@ public final class ElevatorConstants
 
     // The minimum percent speed of the big NEO motor required to counteract the gravity felt by the vertical elevator
     // Calibrated as a part of CalibrateVerticalElevatorSystem
-    public static double VerticalMotorInertia = 0.33;
+    public static double VerticalMotorInertia = 0.06;
 
     public static double InHorizontalThreshold = 0.2;
 
-    public static double HorizontalMotorInertia = 0.03;
+    public static double HorizontalMotorInertia = 0.025;
 
     public static double kVerticalElevatorThreshold = 500;
 

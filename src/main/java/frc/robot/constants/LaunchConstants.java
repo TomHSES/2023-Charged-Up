@@ -14,7 +14,7 @@ public final class LaunchConstants
     // Whether the Robot is currently using the Limelight as a visual system
     public static boolean Limelight = false;
 
-    public static boolean CompetitionControls = true;
+    public static boolean CompetitionControls = false;
 
     public static boolean Log_DriveTrain = true;
 

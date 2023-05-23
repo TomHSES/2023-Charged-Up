@@ -1,6 +1,7 @@
 package frc.robot.commands.Elevator;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.HorizontalElevatorSystem;
@@ -32,7 +33,7 @@ public class IdleHorizontalElevatorSystem extends CommandBase
             ElevatorTimer.reset();
         }
 
-        double inertiaSpeed = ElevatorConstants.HorizontalMotorInertia;
+        double inertiaSpeed = SmartDashboard.getNumber("Horizontal Inertia", ElevatorConstants.HorizontalMotorInertia);
         inertiaSpeed *= ElevatorTimer.hasElapsed(2) ? 1.33 : 1.0;
         HorizontalElevatorSystem.ElevatorMotor.set(inertiaSpeed * HorizontalElevatorSystem.IdleDirection);
     }
